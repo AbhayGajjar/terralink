@@ -1,0 +1,149 @@
+.wrap {
+  position: relative;
+  --marker: 76px;
+}
+
+/* Vertical timeline on mobile */
+.track {
+  position: absolute;
+  top: calc(var(--marker) / 2);
+  bottom: calc(var(--marker) / 2);
+  left: calc(var(--marker) / 2 - 1px);
+  width: 2px;
+  background: var(--line);
+  border-radius: 2px;
+}
+
+.trackFill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, var(--blue), var(--cyan));
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+  transform-origin: top;
+}
+
+.steps {
+  position: relative;
+  display: grid;
+  gap: 36px;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+}
+
+.marker {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: var(--marker);
+  height: var(--marker);
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 22px;
+  color: #fff;
+  background: var(--gradient-brand);
+  box-shadow: 0 10px 24px -8px rgba(30, 111, 255, 0.7);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.step:hover .icon {
+  transform: scale(1.08) rotate(-6deg);
+}
+
+.number {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-family: var(--font-heading);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #fff;
+  background: var(--orange);
+  border: 3px solid #fff;
+}
+
+.text {
+  padding-top: 6px;
+}
+
+.stepLabel {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.text h3 {
+  margin-top: 6px;
+  font-size: 1.25rem;
+}
+
+.text p {
+  margin-top: 8px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* Horizontal timeline on desktop */
+@media (min-width: 1024px) {
+  .wrap {
+    --marker: 92px;
+  }
+
+  .track {
+    top: calc(var(--marker) / 2 - 1px);
+    bottom: auto;
+    left: 12.5%;
+    right: 12.5%;
+    width: auto;
+    height: 2px;
+  }
+
+  .trackFill {
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transform-origin: left;
+  }
+
+  .steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 28px;
+  }
+
+  .step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .icon {
+    width: 66px;
+    height: 66px;
+    font-size: 26px;
+  }
+
+  .text {
+    padding-top: 0;
+  }
+}

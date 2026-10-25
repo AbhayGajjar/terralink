@@ -1,0 +1,68 @@
+.form :global(.ant-input),
+.form :global(.ant-input-affix-wrapper),
+.form :global(.ant-select-selector),
+.form :global(.ant-select) {
+  background: var(--off-white);
+}
+
+.form :global(.ant-input:focus),
+.form :global(.ant-input-affix-wrapper-focused),
+.form :global(.ant-select-focused) {
+  background: #fff;
+}
+
+.row {
+  display: grid;
+  gap: 0 20px;
+}
+
+@media (min-width: 640px) {
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.radios {
+  display: flex;
+  width: 100%;
+}
+
+.radios :global(.ant-radio-button-wrapper) {
+  flex: 1;
+  text-align: center;
+  padding-inline: 10px;
+}
+
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.submit {
+  margin-top: 8px;
+  height: 58px !important;
+  font-size: 17px !important;
+}
+
+.privacy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.result {
+  padding: 32px 8px;
+}
+
+.result :global(.ant-result-title) {
+  font-family: var(--font-heading);
+  font-weight: 800;
+}

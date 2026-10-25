@@ -1,0 +1,40 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.logo svg {
+  filter: drop-shadow(0 6px 14px rgba(30, 111, 255, 0.45));
+  transition: transform 0.4s var(--ease-out);
+}
+
+.logo:hover svg {
+  transform: rotate(-6deg) scale(1.05);
+}
+
+.word {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.accent {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark {
+  color: var(--navy);
+}
+
+.dark .accent {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+}

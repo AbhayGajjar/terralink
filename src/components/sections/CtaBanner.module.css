@@ -1,0 +1,148 @@
+/* The preceding section already supplies bottom spacing */
+.section {
+  padding-top: 0 !important;
+}
+
+.banner {
+  position: relative;
+  display: grid;
+  gap: 32px;
+  align-items: center;
+  padding: clamp(36px, 6vw, 72px);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  background: radial-gradient(circle at 85% 20%, rgba(0, 212, 255, 0.45), transparent 45%),
+    radial-gradient(circle at 10% 110%, rgba(255, 138, 31, 0.18), transparent 38%),
+    linear-gradient(125deg, var(--navy-deep) 0%, var(--navy) 35%, #1450c8 100%);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (min-width: 1024px) {
+  .banner {
+    grid-template-columns: minmax(0, 1.4fr) auto;
+    gap: 56px;
+  }
+}
+
+.decor {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.ring {
+  position: absolute;
+  right: -120px;
+  top: -120px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  animation: spin 40s linear infinite;
+}
+
+.ring::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 16px var(--cyan);
+}
+
+.ring2 {
+  right: -40px;
+  top: -40px;
+  width: 260px;
+  height: 260px;
+  animation-duration: 26s;
+  animation-direction: reverse;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.beam {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 30%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.7), transparent);
+  transform: rotate(-6deg);
+}
+
+.title {
+  max-width: 640px;
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+}
+
+.text {
+  max-width: 560px;
+  margin-top: 16px;
+  font-size: 1.06rem;
+  color: rgba(225, 234, 250, 0.82);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.phone small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(225, 234, 250, 0.7);
+}
+
+.phoneIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  transition: transform 0.3s var(--ease-out), background-color 0.3s ease;
+}
+
+.phone:hover .phoneIcon {
+  transform: rotate(-12deg) scale(1.06);
+  background: var(--blue);
+}
+
+@media (max-width: 479px) {
+  .actions :global(.btn) {
+    width: 100%;
+  }
+}

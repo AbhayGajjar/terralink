@@ -1,0 +1,222 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 1000;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.scrolled {
+  background: rgba(10, 31, 68, 0.82);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* ---------- Desktop nav ---------- */
+
+.nav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.navLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navLinkActive {
+  color: #fff;
+}
+
+.navLinkActive::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  width: 18px;
+  height: 3px;
+  border-radius: 3px;
+  transform: translateX(-50%);
+  background: var(--gradient-brand);
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.phone {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.phoneLabel {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.phoneIcon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.phone:hover .phoneIcon {
+  transform: rotate(-12deg) scale(1.06);
+}
+
+.quote {
+  display: none !important;
+}
+
+.burger {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-size: 19px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.burger:hover {
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.1);
+}
+
+@media (min-width: 560px) {
+  .quote {
+    display: inline-flex !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav {
+    display: block;
+  }
+  .burger {
+    display: none;
+  }
+}
+
+@media (min-width: 1240px) {
+  .phone {
+    display: inline-flex;
+  }
+}
+
+/* ---------- Drawer ---------- */
+
+.drawer :global(.ant-drawer-content) {
+  background: radial-gradient(circle at 100% 0%, rgba(30, 111, 255, 0.3), transparent 55%), var(--navy);
+}
+
+.drawer :global(.ant-drawer-header) {
+  padding: 18px 20px;
+}
+
+.drawer :global(.ant-drawer-header-title) {
+  flex-direction: row-reverse;
+}
+
+.drawer :global(.ant-drawer-close) {
+  margin-inline: 0;
+  font-size: 18px;
+}
+
+.drawerList {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.drawerLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 14px;
+  border-radius: 14px;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.drawerLink:hover,
+.drawerLinkActive {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.drawerLinkActive {
+  box-shadow: inset 3px 0 0 var(--cyan);
+}
+
+.drawerFooter {
+  display: grid;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line-dark);
+}
+
+.drawerNote {
+  margin-top: 4px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}

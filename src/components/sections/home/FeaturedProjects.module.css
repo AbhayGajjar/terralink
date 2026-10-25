@@ -1,0 +1,16 @@
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 32px;
+  margin-bottom: clamp(36px, 5vw, 56px);
+}
+
+.head :global(.section-heading) {
+  margin-bottom: 0;
+}
+
+.all {
+  flex-shrink: 0;
+}

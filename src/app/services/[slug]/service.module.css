@@ -1,0 +1,90 @@
+.overview {
+  display: grid;
+  gap: 48px;
+}
+
+@media (min-width: 1024px) {
+  .overview {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 72px;
+    align-items: start;
+  }
+
+  .includedWrap {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+}
+
+.description h2 {
+  margin-bottom: 24px;
+}
+
+.description p {
+  font-size: 1.06rem;
+  line-height: 1.8;
+  color: #33415c;
+}
+
+.description p + p {
+  margin-top: 18px;
+}
+
+.included {
+  padding: 30px;
+  box-shadow: var(--shadow-md);
+}
+
+.included::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--gradient-brand);
+}
+
+.included h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  font-size: 1.3rem;
+}
+
+.included h3 :global(.anticon) {
+  color: var(--blue);
+}
+
+.included :global(.check-list) {
+  font-size: 15px;
+}
+
+.includedCta {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+
+.includedCta p {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.benefit {
+  height: 100%;
+  padding: 28px;
+}
+
+.benefit h3 {
+  margin-top: 20px;
+  font-size: 1.2rem;
+}
+
+.benefit p {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--muted-light);
+}
