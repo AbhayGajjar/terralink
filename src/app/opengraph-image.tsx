@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { company } from "@/data/company";
 
+export const dynamic = "force-static";
+
 export const alt = `${company.name} – NBN & CCTV installation across South Australia`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

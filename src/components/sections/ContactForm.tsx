@@ -22,6 +22,27 @@ export default function ContactForm() {
   }, [form]);
 
   const onFinish = async (values: ContactInput) => {
+    // Static hosting (GitHub Pages) has no /api/contact, so hand the request to the visitor's email app.
+    if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") {
+      if (values.website) return; // honeypot
+      const label = (options: readonly { value: string; label: string }[], value: string) =>
+        options.find((o) => o.value === value)?.label ?? value;
+      const service = label(serviceOptions, values.serviceType);
+      const body = [
+        `Name: ${values.name}`,
+        `Phone: ${values.phone}`,
+        `Email: ${values.email}`,
+        `Suburb: ${values.suburb}`,
+        `Service: ${service}`,
+        `Property type: ${label(propertyTypes, values.propertyType)}`,
+        `Preferred contact: ${label(contactMethods, values.contactMethod)}`,
+        `Message: ${values.message || "—"}`,
+      ].join("\n");
+      const subject = `Quote request: ${service} – ${values.name} (${values.suburb})`;
+      window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+
     setStatus("submitting");
     try {
       const res = await fetch("/api/contact", {

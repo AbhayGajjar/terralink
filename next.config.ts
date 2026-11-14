@@ -1,10 +1,20 @@
 import type { NextConfig } from "next";
 
+// Set by the GitHub Pages workflow: build plain static files (no server, so no /api routes or
+// image optimisation) served from the repo's sub-path, e.g. https://user.github.io/terralink.
+const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
+
 const nextConfig: NextConfig = {
+  ...(isStaticExport && {
+    output: "export",
+    basePath: process.env.PAGES_BASE_PATH || undefined,
+    trailingSlash: true,
+  }),
   // Cache Components is deliberately left off: Ant Design evaluates Date.now()/Math.random()
   // at module scope (e.g. its portal scroll-locker), which Cache Components rejects during
   // prerendering. Every page here is static content, so all routes are still prerendered at build time.
   images: {
+    unoptimized: isStaticExport,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
