@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: terralink
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CONTACT_EMAIL
+        sync: false
+      - key: CONTACT_FROM_EMAIL
+        sync: false
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
