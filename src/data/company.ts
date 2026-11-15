@@ -33,29 +33,27 @@ export const company = {
   quoteEmail: "abhaymgajjar@gmail.com",
 
   address: {
-    street: "Unit 1, 100 Example Road", // PLACEHOLDER
-    suburb: "Adelaide", // PLACEHOLDER
+    street: "26B Carol Drive",
+    suburb: "Para Hills",
     state: "SA",
-    postcode: "5000", // PLACEHOLDER
+    postcode: "5096",
     country: "AU",
-    // Approximate coordinates of the business (used in JSON-LD). PLACEHOLDER
-    geo: { latitude: -34.9285, longitude: 138.6007 },
+    // Approximate coordinates of the business (used in JSON-LD).
+    geo: { latitude: -34.8066, longitude: 138.6619 },
   },
 
   abn: "00 000 000 000", // PLACEHOLDER – real ABN
 
-  // Google Maps embed for the contact page. Replace with the "Embed a map"
-  // URL from Google Maps for the real business address. PLACEHOLDER
+  // Google Maps embed for the contact page.
   mapEmbedUrl:
-    "https://www.google.com/maps?q=Adelaide+SA+5000&output=embed",
+    "https://www.google.com/maps?q=26B+Carol+Drive,+Para+Hills+SA+5096&output=embed",
 
   foundedYear: 2016, // PLACEHOLDER
 
   openingHours: [
     // PLACEHOLDER – real trading hours
     { days: "Monday – Friday", hours: "7:00am – 5:30pm", schema: { dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "07:00", closes: "17:30" } },
-    { days: "Saturday", hours: "8:00am – 1:00pm", schema: { dayOfWeek: ["Saturday"], opens: "08:00", closes: "13:00" } },
-    { days: "Sunday & public holidays", hours: "Closed", schema: null },
+    { days: "Saturday, Sunday & public holidays", hours: "Closed", schema: null },
   ],
 
   serviceAreas: [
