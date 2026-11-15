@@ -22,24 +22,46 @@ export default function ContactForm() {
   }, [form]);
 
   const onFinish = async (values: ContactInput) => {
-    // Static hosting (GitHub Pages) has no /api/contact, so hand the request to the visitor's email app.
+    // Static hosting (GitHub Pages) has no /api/contact, so the request is emailed via FormSubmit instead.
     if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") {
-      if (values.website) return; // honeypot
+      if (values.website) {
+        setStatus("success"); // honeypot – pretend it worked so bots don't retry
+        return;
+      }
+      setStatus("submitting");
       const label = (options: readonly { value: string; label: string }[], value: string) =>
         options.find((o) => o.value === value)?.label ?? value;
       const service = label(serviceOptions, values.serviceType);
-      const body = [
-        `Name: ${values.name}`,
-        `Phone: ${values.phone}`,
-        `Email: ${values.email}`,
-        `Suburb: ${values.suburb}`,
-        `Service: ${service}`,
-        `Property type: ${label(propertyTypes, values.propertyType)}`,
-        `Preferred contact: ${label(contactMethods, values.contactMethod)}`,
-        `Message: ${values.message || "—"}`,
-      ].join("\n");
-      const subject = `Quote request: ${service} – ${values.name} (${values.suburb})`;
-      window.location.href = `mailto:${company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${company.quoteEmail}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            _subject: `New quote request: ${service} – ${values.name} (${values.suburb})`,
+            _template: "table",
+            _captcha: "false",
+            _replyto: values.email,
+            Name: values.name,
+            Phone: values.phone,
+            Email: values.email,
+            Suburb: values.suburb,
+            Service: service,
+            "Property type": label(propertyTypes, values.propertyType),
+            "Preferred contact": label(contactMethods, values.contactMethod),
+            Message: values.message || "—",
+          }),
+        });
+        const data: { success?: boolean | string; message?: string } = await res.json().catch(() => ({}));
+        if (!res.ok || String(data.success) !== "true") throw new Error("We couldn't send your request.");
+        setStatus("success");
+        form.resetFields();
+      } catch (err) {
+        setStatus("idle");
+        messageApi.error({
+          content: `${err instanceof Error ? err.message : "Something went wrong."} Please call us on ${company.phone.display}.`,
+          duration: 6,
+        });
+      }
       return;
     }
 

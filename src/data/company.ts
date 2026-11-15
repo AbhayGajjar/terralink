@@ -23,10 +23,14 @@ export const company = {
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.terralink.com.au", // PLACEHOLDER – real domain
 
   phone: {
-    display: "08 7010 1234", // PLACEHOLDER – reserved fictional number
-    href: "tel:+61870101234", // PLACEHOLDER – keep in sync with display
+    display: "0492 829 677",
+    href: "tel:+61492829677", // keep in sync with display
   },
   email: "hello@terralink.com.au", // PLACEHOLDER
+
+  // Inbox that receives "Get a free quote" form submissions on the static (GitHub Pages) site,
+  // delivered by FormSubmit (formsubmit.co).
+  quoteEmail: "abhaymgajjar@gmail.com",
 
   address: {
     street: "Unit 1, 100 Example Road", // PLACEHOLDER
