@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { company } from "@/data/company";
-import { certifications, mission, story, team, values } from "@/data/about";
-import { stats } from "@/data/home";
+import { certifications, mission, story, team, TEAM_IS_REAL, values } from "@/data/about";
+import { stats, STATS_ARE_REAL } from "@/data/home";
 import { images } from "@/lib/images";
 import { buildMetadata } from "@/lib/seo";
 import PageHero from "@/components/sections/PageHero";
@@ -15,10 +15,12 @@ import Icon from "@/components/ui/Icon";
 import styles from "./about.module.css";
 
 export const metadata: Metadata = buildMetadata({
-  title: "About Us – Local NBN & CCTV Installers in Adelaide",
-  description: `Meet ${company.name}, a locally owned South Australian telecommunications contractor. Experienced, fully insured NBN and CCTV technicians servicing Adelaide and regional SA.`,
+  title: "About Our Adelaide NBN & CCTV Installers",
+  description: `Meet ${company.name}, a local Adelaide team installing nbn connections, data cabling and CCTV systems, based in ${company.address.suburb}.`,
   path: "/about",
 });
+
+const verifiedCertifications = certifications.filter((cert) => cert.verified);
 
 export default function AboutPage() {
   return (
@@ -27,7 +29,7 @@ export default function AboutPage() {
         eyebrow={`About ${company.name}`}
         title={
           <>
-            Local technicians. <span className="text-gradient">Lasting connections.</span>
+            About {company.name}: <span className="text-gradient">local NBN &amp; CCTV installers</span> in Adelaide
           </>
         }
         lead={`${company.name} is a South Australian team of NBN and security specialists who believe great installs come down to skill, care and clear communication.`}
@@ -42,10 +44,12 @@ export default function AboutPage() {
             <div className={styles.storyImage}>
               <Image src={images.technician.src} alt={images.technician.alt} fill sizes="(min-width: 1024px) 520px, 100vw" className={styles.cover} />
             </div>
-            <div className={`card ${styles.since}`}>
-              <strong>Since {company.foundedYear}</strong>
-              <span>Connecting South Australia</span>
-            </div>
+            {company.foundedYear && (
+              <div className={`card ${styles.since}`}>
+                <strong>Since {company.foundedYear}</strong>
+                <span>Connecting South Australia</span>
+              </div>
+            )}
           </Reveal>
           <Reveal delay={0.1}>
             <span className="eyebrow">Our story</span>
@@ -57,6 +61,7 @@ export default function AboutPage() {
                 <p key={p.slice(0, 24)}>{p}</p>
               ))}
             </div>
+            {STATS_ARE_REAL && (
             <div className={styles.miniStats}>
               {stats.slice(0, 3).map((s) => (
                 <div key={s.label}>
@@ -67,6 +72,7 @@ export default function AboutPage() {
                 </div>
               ))}
             </div>
+            )}
           </Reveal>
         </div>
       </section>
@@ -97,6 +103,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
+      {TEAM_IS_REAL && (
       <section className="section section--light" aria-labelledby="team-title">
         <div className="container">
           <SectionHeading
@@ -123,7 +130,10 @@ export default function AboutPage() {
         </div>
       </section>
 
+      )}
+
       {/* Certifications */}
+      {verifiedCertifications.length > 0 && (
       <section className="section section--white" aria-labelledby="certs-title">
         <div className="container">
           <SectionHeading
@@ -133,7 +143,7 @@ export default function AboutPage() {
             lead="Peace of mind is part of every job. Here's what stands behind our work."
           />
           <Stagger className="grid grid--3">
-            {certifications.map((cert) => (
+            {verifiedCertifications.map((cert) => (
               <StaggerItem key={cert.title}>
                 <article className={`card card--hover ${styles.cert}`}>
                   <span className="icon-tile icon-tile--soft">
@@ -147,11 +157,14 @@ export default function AboutPage() {
               </StaggerItem>
             ))}
           </Stagger>
-          <p className={styles.abn}>
-            {company.legalName} · ABN {company.abn}
-          </p>
+          {company.abn && (
+            <p className={styles.abn}>
+              {company.legalName || company.name} · ABN {company.abn}
+            </p>
+          )}
         </div>
       </section>
+      )}
 
       <ServiceAreas />
 

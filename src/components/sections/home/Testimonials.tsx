@@ -68,15 +68,19 @@ export default function Testimonials() {
       onTouchStart={() => setPaused(true)}
     >
       <div className={styles.summary}>
-        <div className={styles.score}>
-          <strong>{company.rating.value.toFixed(1)}</strong>
-          <div>
-            <span className={styles.summaryStars} aria-label={`Rated ${company.rating.value} out of 5`}>
-              ★★★★★
-            </span>
-            <span>Based on {company.rating.count}+ Google reviews</span>
+        {company.rating ? (
+          <div className={styles.score}>
+            <strong>{company.rating.value.toFixed(1)}</strong>
+            <div>
+              <span className={styles.summaryStars} aria-label={`Rated ${company.rating.value} out of 5`}>
+                ★★★★★
+              </span>
+              <span>Based on {company.rating.count} Google reviews</span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <span />
+        )}
         <div className={styles.controls}>
           <button type="button" onClick={() => step(-1)} aria-label="Previous testimonial">
             <LeftOutlined />

@@ -15,9 +15,8 @@ import styles from "./services.module.css";
 export const metadata: Metadata = buildMetadata({
   title: "NBN & CCTV Installation Services Adelaide",
   description:
-    "Explore TerraLink's services: FTTP, FTTN, FTTC and HFC NBN installation plus CCTV and security camera installation for homes and businesses across Adelaide and South Australia.",
+    "FTTP, FTTN, FTTC and HFC nbn installation and cabling, plus CCTV and security camera installation, for homes and businesses across Adelaide.",
   path: "/services",
-  keywords: services.flatMap((s) => s.seo.keywords),
 });
 
 export default function ServicesPage() {
@@ -27,10 +26,10 @@ export default function ServicesPage() {
         eyebrow="Our services"
         title={
           <>
-            NBN &amp; security installations, <span className="text-gradient">done properly</span>
+            <span className="text-gradient">NBN &amp; CCTV installation services</span> in Adelaide
           </>
         }
-        lead={`Whether you're connecting to full fibre, fixing a flaky FTTN line or protecting your property with CCTV, ${company.name}'s local technicians deliver tidy, tested work across South Australia.`}
+        lead={`Whether you're connecting to full fibre, fixing a flaky FTTN line or protecting your property with CCTV, ${company.name}'s local technicians deliver tidy, tested work across Adelaide and surrounding areas.`}
         breadcrumbs={[{ name: "Services", path: "/services" }]}
       >
         <Link href="/contact" className="btn btn--cta btn--lg">

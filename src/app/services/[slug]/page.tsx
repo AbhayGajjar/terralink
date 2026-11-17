@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getRelatedServices, getService, services } from "@/data/services";
 import { company } from "@/data/company";
-import { buildMetadata, faqJsonLd, siteUrl } from "@/lib/seo";
+import { absoluteUrl, buildMetadata, faqJsonLd, serviceJsonLd } from "@/lib/seo";
+import { legacyRedirects } from "@/data/redirects";
 import PageHero from "@/components/sections/PageHero";
 import HowItWorks from "@/components/sections/home/HowItWorks";
 import FaqSection from "@/components/sections/FaqSection";
@@ -19,18 +20,26 @@ import styles from "./service.module.css";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }));
+  // Old URLs (src/data/redirects.ts) are generated too, as permanent redirects to the new ones.
+  const legacy = legacyRedirects.filter((r) => r.source.startsWith("/services/")).map((r) => r.source.replace("/services/", ""));
+  return [...services.map((service) => service.slug), ...legacy].map((slug) => ({ slug }));
+}
+
+function findLegacy(slug: string) {
+  return legacyRedirects.find((r) => r.source === `/services/${slug}`)?.destination;
 }
 
 export async function generateMetadata({ params }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const service = getService(slug);
-  if (!service) return {};
+  if (!service) {
+    const moved = findLegacy(slug);
+    return moved ? { title: "Page moved", robots: { index: false, follow: true }, alternates: { canonical: absoluteUrl(moved) } } : {};
+  }
   return buildMetadata({
     title: service.seo.title,
     description: service.seo.description,
     path: `/services/${service.slug}`,
-    keywords: service.seo.keywords,
   });
 }
 
@@ -39,7 +48,12 @@ const processIcons: IconName[] = ["survey", "schedule", "tool", "checkCircle"];
 export default async function ServicePage({ params }: PageProps<"/services/[slug]">) {
   const { slug } = await params;
   const service = getService(slug);
-  if (!service) notFound();
+  if (!service) {
+    const moved = findLegacy(slug);
+    // On a server this is a 308; on the static export Next writes a page with an instant meta refresh.
+    if (moved) permanentRedirect(moved);
+    notFound();
+  }
 
   const related = getRelatedServices(service.slug);
   const steps = service.process.map((step, i) => ({ ...step, icon: processIcons[i % processIcons.length] }));
@@ -48,7 +62,7 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
     <>
       <PageHero
         eyebrow={service.category === "nbn" ? "NBN installation" : "Security systems"}
-        title={service.title}
+        title={service.heading}
         lead={service.tagline}
         breadcrumbs={[
           { name: "Services", path: "/services" },
@@ -157,17 +171,13 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
       <JsonLd
         data={[
-          {
-            "@context": "https://schema.org",
-            "@type": "Service",
-            name: service.title,
+          serviceJsonLd({
+            name: service.heading,
+            serviceType: service.serviceType,
             description: service.seo.description,
-            serviceType: service.title,
-            url: `${siteUrl}/services/${service.slug}`,
+            path: `/services/${service.slug}`,
             image: service.image.src,
-            provider: { "@id": `${siteUrl}/#business` },
-            areaServed: { "@type": "State", name: "South Australia" },
-          },
+          }),
           faqJsonLd(service.faqs),
         ]}
       />

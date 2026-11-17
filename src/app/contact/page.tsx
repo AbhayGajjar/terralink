@@ -8,15 +8,14 @@ import Icon, { type IconName } from "@/components/ui/Icon";
 import styles from "./contact.module.css";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Contact Us – Free NBN & CCTV Quotes Adelaide",
-  description: `Request a free quote for NBN installation or CCTV installation in Adelaide and South Australia. Call ${company.phone.display} or send us your details online.`,
+  title: "Contact Us – Free NBN & CCTV Quote Adelaide",
+  description: `Request a free quote for nbn installation, cabling or CCTV installation in Adelaide. Call ${company.phone.display} or send your details online.`,
   path: "/contact",
-  keywords: ["NBN installation quote Adelaide", "CCTV installation quote Adelaide"],
 });
 
 const infoCards: { icon: IconName; title: string; lines: string[]; href?: string; cta?: string }[] = [
   { icon: "phone", title: "Call us", lines: [company.phone.display], href: company.phone.href, cta: "Call now" },
-  { icon: "mail", title: "Email us", lines: [company.email], href: `mailto:${company.email}`, cta: "Send an email" },
+  ...(company.email ? [{ icon: "mail" as IconName, title: "Email us", lines: [company.email], href: `mailto:${company.email}`, cta: "Send an email" }] : []),
   { icon: "location", title: "Visit us", lines: [fullAddress] },
   { icon: "clock", title: "Opening hours", lines: company.openingHours.map((row) => `${row.days}: ${row.hours}`) },
 ];
@@ -34,7 +33,7 @@ export default function ContactPage() {
         eyebrow="Contact us"
         title={
           <>
-            Get your <span className="text-gradient">free quote</span>
+            Get a free <span className="text-gradient">NBN or CCTV quote</span> in Adelaide
           </>
         }
         lead="Tell us a little about your property and what you need. We'll come back to you within one business day with honest advice and a fixed-price quote."

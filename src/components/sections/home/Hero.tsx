@@ -41,13 +41,13 @@ export default function Hero() {
 
       <div className={`container ${styles.inner}`}>
         <div className={styles.content}>
-          <span className={`eyebrow eyebrow--dark ${styles.enter}`}>South Australia&apos;s NBN &amp; CCTV specialists</span>
+          <span className={`eyebrow eyebrow--dark ${styles.enter}`}>Local technicians · Adelaide &amp; surrounds</span>
           <h1 id="hero-title" className={`${styles.title} ${styles.enter}`} style={{ animationDelay: "0.08s" }}>
-            Fast, reliable <span className="text-gradient">NBN &amp; CCTV</span> installation across SA
+            <span className="text-gradient">NBN &amp; CCTV installation</span> in Adelaide
           </h1>
           <p className={`${styles.lead} ${styles.enter}`} style={{ animationDelay: "0.16s" }}>
-            From full-fibre FTTP connections to 4K security cameras, TerraLink&apos;s local technicians deliver tidy, tested
-            installations for homes and businesses throughout Adelaide and regional South Australia.
+            FTTP, FTTN, FTTC and HFC installation and cabling, plus security camera systems, for homes and businesses
+            across Adelaide. Tidy work, tested before we leave, and plain-English advice from local technicians.
           </p>
           <div className={`${styles.ctas} ${styles.enter}`} style={{ animationDelay: "0.24s" }}>
             <Link href="/contact" className="btn btn--cta btn--lg">
@@ -58,7 +58,7 @@ export default function Hero() {
             </Link>
           </div>
           <ul className={`${styles.badges} ${styles.enter}`} style={{ animationDelay: "0.32s" }} aria-label="Why customers trust us">
-            {company.trustBadges.map((badge) => (
+            {company.trustBadges.filter((badge) => badge.verified).map((badge) => (
               <li key={badge.label}>
                 <span className={styles.badgeIcon}>
                   <Icon name={badge.icon} />
@@ -122,12 +122,14 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className={`glass-card ${styles.ratingCard}`}>
-            <span className={styles.stars}>★★★★★</span>
-            <span>
-              <strong>{company.rating.value}</strong> from {company.rating.count}+ reviews
-            </span>
-          </div>
+          {company.rating && (
+            <div className={`glass-card ${styles.ratingCard}`}>
+              <span className={styles.stars}>★★★★★</span>
+              <span>
+                <strong>{company.rating.value}</strong> from {company.rating.count} Google reviews
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

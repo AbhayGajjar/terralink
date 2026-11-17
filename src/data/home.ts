@@ -34,7 +34,12 @@ export const features: { title: string; description: string; icon: IconName }[] 
   },
 ];
 
-/** PLACEHOLDER STATS – replace with real figures */
+/**
+ * PLACEHOLDER STATS – replace with real figures, then set STATS_ARE_REAL to true.
+ * While false, the stats strip (home) and mini stats (about) are hidden so nothing unverified is published.
+ */
+export const STATS_ARE_REAL = false;
+
 export const stats: { value: number; decimals?: number; suffix?: string; label: string; icon: IconName }[] = [
   { value: 2500, suffix: "+", label: "Installations completed", icon: "checkCircle" },
   { value: 10, suffix: "+", label: "Years of experience", icon: "trophy" },
@@ -91,7 +96,7 @@ export const nbnTechnologies: NbnTechnology[] = [
     speed: { label: "Fastest", score: 100 },
     reliability: { label: "Excellent", score: 96 },
     equipment: ["Premises Connection Device (outside)", "NBN connection box (inside)", "Your router"],
-    serviceSlug: "fttp-installation",
+    serviceSlug: "fttp-installation-adelaide",
   },
   {
     key: "fttn",
@@ -104,7 +109,7 @@ export const nbnTechnologies: NbnTechnology[] = [
     speed: { label: "Variable", score: 52 },
     reliability: { label: "Good", score: 64 },
     equipment: ["Phone wall socket", "VDSL2-compatible modem/router"],
-    serviceSlug: "fttn-installation",
+    serviceSlug: "fttn-installation-adelaide",
   },
   {
     key: "fttc",
@@ -117,7 +122,7 @@ export const nbnTechnologies: NbnTechnology[] = [
     speed: { label: "Fast", score: 78 },
     reliability: { label: "Very good", score: 82 },
     equipment: ["NBN connection device (inside)", "Phone wall socket", "Your router"],
-    serviceSlug: "fttc-hfc",
+    serviceSlug: "fttc-hfc-installation-adelaide",
   },
   {
     key: "hfc",
@@ -130,11 +135,16 @@ export const nbnTechnologies: NbnTechnology[] = [
     speed: { label: "Fast", score: 84 },
     reliability: { label: "Very good", score: 80 },
     equipment: ["Coaxial wall outlet", "NBN connection box (inside)", "Your router"],
-    serviceSlug: "fttc-hfc",
+    serviceSlug: "fttc-hfc-installation-adelaide",
   },
 ];
 
-/** PLACEHOLDER TESTIMONIALS – replace with genuine customer reviews (with permission) */
+/**
+ * PLACEHOLDER TESTIMONIALS – replace with genuine customer reviews (copied word-for-word, with permission),
+ * then set TESTIMONIALS_ARE_REAL to true. While false, the reviews section is hidden.
+ */
+export const TESTIMONIALS_ARE_REAL = false;
+
 export const testimonials: { name: string; location: string; service: string; rating: number; quote: string }[] = [
   {
     name: "Sarah M.",

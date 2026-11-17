@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { company } from "@/data/company";
-import { homeFaqs } from "@/data/home";
+import { homeFaqs, STATS_ARE_REAL, TESTIMONIALS_ARE_REAL } from "@/data/home";
+import { PROJECTS_ARE_REAL } from "@/data/projects";
 import { buildMetadata, faqJsonLd } from "@/lib/seo";
 import Hero from "@/components/sections/home/Hero";
 import ServicesOverview from "@/components/sections/home/ServicesOverview";
@@ -15,16 +16,13 @@ import CtaBanner from "@/components/sections/CtaBanner";
 import SectionHeading from "@/components/ui/SectionHeading";
 import JsonLd from "@/components/ui/JsonLd";
 
-export const metadata: Metadata = {
-  ...buildMetadata({
-    title: "NBN & CCTV Installation Adelaide, SA",
-    description:
-      "TerraLink provides expert NBN installation (FTTP, FTTN, FTTC & HFC) and CCTV security camera installation across Adelaide and South Australia. Local, fully insured technicians. Get a free quote.",
-    path: "/",
-  }),
-  // The home page uses the full brand title rather than the "%s | TerraLink" template.
-  title: { absolute: `${company.name} | NBN & CCTV Installation Adelaide, SA` },
-};
+export const metadata: Metadata = buildMetadata({
+  title: `NBN & CCTV Installation Adelaide | ${company.name}`,
+  absoluteTitle: true,
+  description:
+    "nbn installation and cabling (FTTP, FTTN, FTTC, HFC) and CCTV security camera installation for Adelaide homes and businesses. Free local quotes.",
+  path: "/",
+});
 
 export default function HomePage() {
   return (
@@ -32,7 +30,7 @@ export default function HomePage() {
       <Hero />
       <ServicesOverview />
       <WhyChoose />
-      <StatsStrip />
+      {STATS_ARE_REAL && <StatsStrip />}
 
       <section className="section section--white" aria-labelledby="process-title">
         <div className="container">
@@ -62,8 +60,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      <FeaturedProjects />
+      {PROJECTS_ARE_REAL && <FeaturedProjects />}
 
+      {TESTIMONIALS_ARE_REAL && (
       <section className="section section--dark" aria-labelledby="reviews-title">
         <div className="container">
           <SectionHeading
@@ -78,6 +77,7 @@ export default function HomePage() {
           <Testimonials />
         </div>
       </section>
+      )}
 
       <FaqSection items={homeFaqs} />
       <CtaBanner tone="white" />

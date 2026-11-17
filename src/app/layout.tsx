@@ -3,7 +3,8 @@ import { Suspense } from "react";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { company } from "@/data/company";
-import { baseKeywords, localBusinessJsonLd, siteUrl } from "@/lib/seo";
+import { localBusinessJsonLd, siteUrl, websiteJsonLd } from "@/lib/seo";
+import Analytics from "@/components/layout/Analytics";
 import Providers from "@/components/layout/Providers";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -24,32 +25,25 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const googleVerification = process.env.GOOGLE_SITE_VERIFICATION;
+const bingVerification = process.env.BING_SITE_VERIFICATION;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${company.name} | NBN & CCTV Installation Adelaide, SA`,
+    default: `NBN & CCTV Installation Adelaide | ${company.name}`,
     template: `%s | ${company.name}`,
   },
   description: company.description,
   applicationName: company.name,
-  keywords: baseKeywords,
   authors: [{ name: company.name }],
   creator: company.name,
   formatDetection: { telephone: true, email: true, address: true },
-  openGraph: {
-    type: "website",
-    locale: "en_AU",
-    siteName: company.name,
-    url: siteUrl,
-    title: `${company.name} | NBN & CCTV Installation Adelaide`,
-    description: company.description,
+  robots: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  verification: {
+    ...(googleVerification ? { google: googleVerification } : {}),
+    ...(bingVerification ? { other: { "msvalidate.01": bingVerification } } : {}),
   },
-  twitter: {
-    card: "summary_large_image",
-    title: `${company.name} | NBN & CCTV Installation Adelaide`,
-    description: company.description,
-  },
-  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
@@ -75,7 +69,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Suspense>
           </Providers>
         </AntdRegistry>
-        <JsonLd data={localBusinessJsonLd()} />
+        <JsonLd data={[localBusinessJsonLd(), websiteJsonLd()]} />
+        <Analytics />
       </body>
     </html>
   );

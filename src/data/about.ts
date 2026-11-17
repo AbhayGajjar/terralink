@@ -17,7 +17,9 @@ export const values: { title: string; description: string; icon: IconName }[] = 
   { title: "Safety always", description: "Fully insured, properly trained and compliant with Australian standards on every job.", icon: "shield" },
 ];
 
-/** PLACEHOLDER TEAM – replace names, roles and add real photos */
+/** PLACEHOLDER TEAM – replace names, roles and add real photos, then set TEAM_IS_REAL to true (hidden until then). */
+export const TEAM_IS_REAL = false;
+
 export const team: { name: string; role: string; bio: string }[] = [
   { name: "Team Member", role: "Founder & Lead Technician", bio: "15+ years in telecommunications, specialising in fibre and complex NBN installs." },
   { name: "Team Member", role: "Operations Manager", bio: "Keeps jobs on schedule and customers informed from first call to final sign-off." },
@@ -25,12 +27,15 @@ export const team: { name: string; role: string; bio: string }[] = [
   { name: "Team Member", role: "Security Systems Specialist", bio: "Designs and commissions CCTV systems for homes, retail and industrial sites." },
 ];
 
-/** PLACEHOLDER – list only registrations, licences and cover TerraLink actually holds */
-export const certifications: { title: string; description: string; icon: IconName }[] = [
-  { title: "Registered cablers", description: "Technicians hold ACMA cabling registration for the work they perform.", icon: "safety" },
-  { title: "NBN accredited", description: "Trained and accredited to work on the NBN network (placeholder – confirm wording).", icon: "fibre" },
-  { title: "Security licence", description: "Licensed to install security equipment in South Australia (placeholder – add licence no.).", icon: "lock" },
-  { title: "$20M public liability", description: "Comprehensive public liability insurance on every job (placeholder – confirm amount).", icon: "insured" },
-  { title: "Work health & safety", description: "Working at heights, White Card and first aid trained team members.", icon: "shield" },
-  { title: "Workmanship guarantee", description: "Every installation tested and backed by our workmanship guarantee.", icon: "checkCircle" },
+/**
+ * PLACEHOLDER – list only registrations, licences and cover TerraLink actually holds.
+ * Each item is only shown when verified is true (add licence/registration numbers to the description).
+ */
+export const certifications: { title: string; description: string; icon: IconName; verified: boolean }[] = [
+  { title: "Registered cablers", description: "Technicians hold ACMA cabling registration for the work they perform.", icon: "safety", verified: false },
+  { title: "NBN accredited", description: "Trained and accredited to work on the NBN network (placeholder – confirm wording).", icon: "fibre", verified: false },
+  { title: "Security licence", description: "Licensed to install security equipment in South Australia (placeholder – add licence no.).", icon: "lock", verified: false },
+  { title: "$20M public liability", description: "Comprehensive public liability insurance on every job (placeholder – confirm amount).", icon: "insured", verified: false },
+  { title: "Work health & safety", description: "Working at heights, White Card and first aid trained team members.", icon: "shield", verified: false },
+  { title: "Workmanship guarantee", description: "Every installation tested and backed by our workmanship guarantee.", icon: "checkCircle", verified: false },
 ];

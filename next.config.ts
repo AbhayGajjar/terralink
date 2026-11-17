@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { legacyRedirects } from "./src/data/redirects";
 
 // Set by the GitHub Pages workflow: build plain static files (no server, so no /api routes or
 // image optimisation) served from the repo's sub-path, e.g. https://user.github.io/terralink.
@@ -23,6 +24,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Old URLs → new keyword-rich URLs. Only works with a Node server (e.g. Render); the static
+  // export can't send redirects, so it gets generated redirect pages instead (see services/[slug]).
+  ...(!isStaticExport && {
+    async redirects() {
+      return legacyRedirects.map((r) => ({ ...r, permanent: true }));
+    },
+  }),
   // Tree-shake Ant Design and its icon set so only the components we use are bundled.
   experimental: {
     optimizePackageImports: ["antd", "@ant-design/icons"],

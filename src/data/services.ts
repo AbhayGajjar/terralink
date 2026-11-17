@@ -6,6 +6,10 @@ export type ServiceCategory = "nbn" | "cctv";
 export interface Service {
   slug: string;
   title: string;
+  /** The page H1 – contains the main keyword */
+  heading: string;
+  /** schema.org serviceType */
+  serviceType: string;
   /** Short name for nav, footer and cards */
   shortTitle: string;
   category: ServiceCategory;
@@ -28,7 +32,9 @@ export interface Service {
  */
 export const services: Service[] = [
   {
-    slug: "fttp-installation",
+    slug: "fttp-installation-adelaide",
+    heading: "FTTP fibre installation service in Adelaide",
+    serviceType: "FTTP installation",
     title: "FTTP Installation",
     shortTitle: "FTTP Installation",
     category: "nbn",
@@ -87,14 +93,16 @@ export const services: Service[] = [
       },
     ],
     seo: {
-      title: "FTTP NBN Installation Adelaide",
+      title: "FTTP Fibre Installation Service Adelaide",
       description:
-        "Professional FTTP NBN installation across Adelaide and South Australia. Fibre lead-in, utility box and NBN connection box installed neatly by experienced, fully insured technicians.",
+        "FTTP fibre installation and cabling in Adelaide: what is included, how the job runs, how long it takes and what affects the cost. Free quotes.",
       keywords: ["FTTP installation Adelaide", "NBN fibre installation", "FTTP upgrade SA", "NBN installer Adelaide"],
     },
   },
   {
-    slug: "fttn-installation",
+    slug: "fttn-installation-adelaide",
+    heading: "FTTN installation and wiring in Adelaide",
+    serviceType: "FTTN installation",
     title: "FTTN Installation",
     shortTitle: "FTTN Installation",
     category: "nbn",
@@ -152,14 +160,16 @@ export const services: Service[] = [
       },
     ],
     seo: {
-      title: "FTTN NBN Installation & Wiring Adelaide",
+      title: "FTTN Installation & Wiring Adelaide",
       description:
-        "FTTN NBN installation, socket relocation and internal re-wiring in Adelaide. Fix drop-outs and slow speeds with TerraLink's experienced NBN technicians.",
+        "FTTN installation and internal wiring in Adelaide. We fix slow speeds and drop-outs caused by old phone sockets and copper wiring. Free quotes.",
       keywords: ["FTTN installation Adelaide", "NBN wall socket relocation", "NBN wiring fix Adelaide", "FTTN technician SA"],
     },
   },
   {
-    slug: "fttc-hfc",
+    slug: "fttc-hfc-installation-adelaide",
+    heading: "FTTC and HFC nbn installation in Adelaide",
+    serviceType: "FTTC and HFC installation",
     title: "FTTC & HFC Installation",
     shortTitle: "FTTC & HFC",
     category: "nbn",
@@ -219,12 +229,14 @@ export const services: Service[] = [
     seo: {
       title: "FTTC & HFC NBN Installation Adelaide",
       description:
-        "FTTC and HFC NBN installation, relocation and repairs across Adelaide and SA. Neat workmanship, full signal testing and experienced local technicians.",
+        "FTTC and HFC nbn installation, wall outlet relocation and signal testing in Adelaide. Tidy cabling by local technicians. Free, no-obligation quotes.",
       keywords: ["FTTC installation Adelaide", "HFC NBN installation", "NBN box relocation Adelaide", "NBN technician Adelaide"],
     },
   },
   {
-    slug: "cctv-installation",
+    slug: "cctv-installation-adelaide",
+    heading: "Security camera installation in Adelaide",
+    serviceType: "CCTV installation",
     title: "CCTV & Security Camera Installation",
     shortTitle: "CCTV & Security Cameras",
     category: "cctv",
@@ -283,9 +295,9 @@ export const services: Service[] = [
       },
     ],
     seo: {
-      title: "CCTV & Security Camera Installation Adelaide",
+      title: "Security Camera Installation Adelaide",
       description:
-        "CCTV and security camera installation in Adelaide for homes and businesses. HD and 4K cameras, night vision and phone app viewing, professionally installed by TerraLink.",
+        "Security camera installation in Adelaide for homes and businesses: system design, cabling, recorder set-up and phone viewing. Get a free quote.",
       keywords: ["CCTV installation Adelaide", "security camera installation Adelaide", "home CCTV SA", "business security cameras Adelaide"],
     },
   },

@@ -68,10 +68,12 @@ export default function Footer() {
                 <Icon name="phone" />
                 <a href={company.phone.href}>{company.phone.display}</a>
               </li>
-              <li>
-                <Icon name="mail" />
-                <a href={`mailto:${company.email}`}>{company.email}</a>
-              </li>
+              {company.email && (
+                <li>
+                  <Icon name="mail" />
+                  <a href={`mailto:${company.email}`}>{company.email}</a>
+                </li>
+              )}
               <li>
                 <Icon name="location" />
                 <address>{fullAddress}</address>
@@ -103,7 +105,7 @@ export default function Footer() {
 
         <div className={styles.bottom}>
           <p>
-            © <CurrentYear /> {company.legalName}. All rights reserved. ABN {company.abn}
+            © <CurrentYear /> {company.legalName || company.name}. All rights reserved.{company.abn ? ` ABN ${company.abn}` : ""}
           </p>
           <BackToTop />
         </div>
