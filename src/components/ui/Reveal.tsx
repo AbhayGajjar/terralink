@@ -1,64 +1,32 @@
-"use client";
+import type { CSSProperties, ReactNode } from "react";
 
-import type { ReactNode } from "react";
-import { motion, type Variants } from "framer-motion";
-
-const ease = [0.22, 1, 0.36, 1] as const;
-
+/**
+ * Scroll-reveal wrappers, implemented with CSS scroll-driven animations (see `.reveal` in
+ * globals.css). No JavaScript: content is always present and visible in the HTML, so search
+ * engines and users without JS see everything. Browsers without scroll-timeline support (or
+ * with reduced motion) simply show the content without animating.
+ */
 interface RevealProps {
   children: ReactNode;
   className?: string;
+  /** Kept for API compatibility – the animation is tied to scroll position instead of time. */
   delay?: number;
-  /** Distance to slide up from, in px */
   y?: number;
   x?: number;
 }
 
-/** Fades and slides its children in once they scroll into view. */
-export default function Reveal({ children, className, delay = 0, y = 28, x = 0 }: RevealProps) {
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y, x }}
-      whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, margin: "0px 0px -80px 0px" }}
-      transition={{ duration: 0.7, ease, delay }}
-    >
-      {children}
-    </motion.div>
-  );
+export default function Reveal({ children, className }: RevealProps) {
+  return <div className={`reveal ${className ?? ""}`}>{children}</div>;
 }
 
-const containerVariants: Variants = {
-  hidden: {},
-  visible: (stagger: number) => ({ transition: { staggerChildren: stagger, delayChildren: 0.05 } }),
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease } },
-};
-
-/** Parent for staggered card reveals – pair with <StaggerItem>. */
-export function Stagger({ children, className, stagger = 0.1 }: { children: ReactNode; className?: string; stagger?: number }) {
-  return (
-    <motion.div
-      className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "0px 0px -60px 0px" }}
-      variants={containerVariants}
-      custom={stagger}
-    >
-      {children}
-    </motion.div>
-  );
+export function Stagger({ children, className }: { children: ReactNode; className?: string; stagger?: number }) {
+  return <div className={className}>{children}</div>;
 }
 
-export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
+export function StaggerItem({ children, className, style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
   return (
-    <motion.div className={className} variants={itemVariants}>
+    <div className={`reveal ${className ?? ""}`} style={style}>
       {children}
-    </motion.div>
+    </div>
   );
 }

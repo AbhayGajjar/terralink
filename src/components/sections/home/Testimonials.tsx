@@ -1,9 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Rate } from "antd";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import Icon from "@/components/ui/Icon";
 import { testimonials } from "@/data/home";
 import { company } from "@/data/company";
 import styles from "./Testimonials.module.css";
@@ -83,10 +82,10 @@ export default function Testimonials() {
         )}
         <div className={styles.controls}>
           <button type="button" onClick={() => step(-1)} aria-label="Previous testimonial">
-            <LeftOutlined />
+            <Icon name="arrowLeft" />
           </button>
           <button type="button" onClick={() => step(1)} aria-label="Next testimonial">
-            <RightOutlined />
+            <Icon name="arrowRight" />
           </button>
         </div>
       </div>
@@ -97,7 +96,10 @@ export default function Testimonials() {
             <span className={styles.quoteMark} aria-hidden="true">
               &ldquo;
             </span>
-            <Rate disabled defaultValue={t.rating} className={styles.stars} aria-label={`${t.rating} out of 5 stars`} />
+            <span className={styles.stars} role="img" aria-label={`${t.rating} out of 5 stars`}>
+              {"★".repeat(Math.round(t.rating))}
+              <span className={styles.starsOff}>{"★".repeat(5 - Math.round(t.rating))}</span>
+            </span>
             <blockquote>{t.quote}</blockquote>
             <figcaption>
               <span className={styles.avatar} aria-hidden="true">

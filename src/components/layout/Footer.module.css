@@ -74,7 +74,7 @@
 .social a:hover {
   transform: translateY(-3px);
   background: var(--blue);
-  border-color: var(--blue);
+  border-color: var(--blue-ink);
 }
 
 .heading {

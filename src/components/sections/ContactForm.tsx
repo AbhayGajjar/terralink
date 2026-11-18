@@ -1,38 +1,81 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Button, Form, Input, Radio, Result, Select, message } from "antd";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { company } from "@/data/company";
-import { contactMethods, isAustralianPhone, propertyTypes, serviceOptions, type ContactInput } from "@/lib/contact";
-import Icon from "@/components/ui/Icon";
+import { contactMethods, propertyTypes, validateContact, type ContactValues, type FieldErrors, type Option } from "@/lib/contact-fields";
 import styles from "./ContactForm.module.css";
 
 type Status = "idle" | "submitting" | "success";
 
-export default function ContactForm() {
-  const [form] = Form.useForm<ContactInput>();
-  const [status, setStatus] = useState<Status>("idle");
-  const [messageApi, contextHolder] = message.useMessage();
+interface ContactFormProps {
+  /** Service choices – built on the server from src/data/services.ts */
+  serviceOptions: Option[];
+  /** Icons rendered on the server (keeps icon code out of the browser bundle) */
+  icons: { arrow: ReactNode; lock: ReactNode; check: ReactNode };
+}
 
-  // Pre-select the service when arriving from a service page (/contact?service=fttp-installation).
-  // Read in an effect (not useSearchParams) so the form itself can still be statically rendered.
+const fieldOrder: (keyof ContactValues)[] = ["name", "phone", "email", "suburb", "serviceType", "message"];
+
+/**
+ * Quote request form – plain HTML form + a little React state (no UI library), so it loads fast
+ * on every page that links to /contact. On GitHub Pages it posts to FormSubmit; on a Node server
+ * it posts to /api/contact, which re-validates with zod.
+ */
+export default function ContactForm({ serviceOptions, icons }: ContactFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<Status>("idle");
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [formError, setFormError] = useState("");
+  const [messageLength, setMessageLength] = useState(0);
+
+  // Pre-select the service when arriving from a service page (/contact?service=fttp-installation-adelaide).
   useEffect(() => {
     const service = new URLSearchParams(window.location.search).get("service");
-    if (service && serviceOptions.some((o) => o.value === service)) form.setFieldValue("serviceType", service);
-  }, [form]);
+    const select = formRef.current?.elements.namedItem("serviceType") as HTMLSelectElement | null;
+    if (service && select && serviceOptions.some((o) => o.value === service)) select.value = service;
+  }, [serviceOptions]);
 
-  const onFinish = async (values: ContactInput) => {
-    // Static hosting (GitHub Pages) has no /api/contact, so the request is emailed via FormSubmit instead.
-    if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") {
-      if (values.website) {
-        setStatus("success"); // honeypot – pretend it worked so bots don't retry
-        return;
-      }
-      setStatus("submitting");
-      const label = (options: readonly { value: string; label: string }[], value: string) =>
-        options.find((o) => o.value === value)?.label ?? value;
-      const service = label(serviceOptions, values.serviceType);
-      try {
+  const readValues = (form: HTMLFormElement): ContactValues => {
+    const data = new FormData(form);
+    const get = (key: keyof ContactValues) => String(data.get(key) ?? "");
+    return {
+      name: get("name"),
+      phone: get("phone"),
+      email: get("email"),
+      suburb: get("suburb"),
+      serviceType: get("serviceType"),
+      propertyType: get("propertyType") || "residential",
+      contactMethod: get("contactMethod") || "either",
+      message: get("message"),
+      website: get("website"),
+    };
+  };
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const values = readValues(form);
+    const fieldErrors = validateContact(values, serviceOptions.map((o) => o.value));
+    setErrors(fieldErrors);
+    setFormError("");
+
+    const firstInvalid = fieldOrder.find((key) => fieldErrors[key]);
+    if (firstInvalid) {
+      (form.elements.namedItem(firstInvalid) as HTMLElement | null)?.focus();
+      return;
+    }
+
+    const label = (options: readonly Option[], value: string) => options.find((o) => o.value === value)?.label ?? value;
+    setStatus("submitting");
+
+    try {
+      if (process.env.NEXT_PUBLIC_STATIC_EXPORT === "true") {
+        // Static hosting (GitHub Pages) has no /api/contact, so the request is emailed via FormSubmit.
+        if (values.website) {
+          setStatus("success"); // honeypot – pretend it worked so bots don't retry
+          return;
+        }
+        const service = label(serviceOptions, values.serviceType);
         const res = await fetch(`https://formsubmit.co/ajax/${company.quoteEmail}`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -51,154 +94,166 @@ export default function ContactForm() {
             Message: values.message || "—",
           }),
         });
-        const data: { success?: boolean | string; message?: string } = await res.json().catch(() => ({}));
+        const data: { success?: boolean | string } = await res.json().catch(() => ({}));
         if (!res.ok || String(data.success) !== "true") throw new Error("We couldn't send your request.");
-        setStatus("success");
-        form.resetFields();
-      } catch (err) {
-        setStatus("idle");
-        messageApi.error({
-          content: `${err instanceof Error ? err.message : "Something went wrong."} Please call us on ${company.phone.display}.`,
-          duration: 6,
+      } else {
+        const res = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
         });
-      }
-      return;
-    }
-
-    setStatus("submitting");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-      const data: { ok: boolean; error?: string; fieldErrors?: Record<string, string[]> } = await res.json();
-
-      if (!res.ok || !data.ok) {
-        if (data.fieldErrors) {
-          form.setFields(
-            Object.entries(data.fieldErrors).map(([name, errors]) => ({ name: name as keyof ContactInput, errors })),
-          );
+        const data: { ok: boolean; error?: string; fieldErrors?: Record<string, string[]> } = await res.json();
+        if (!res.ok || !data.ok) {
+          if (data.fieldErrors) {
+            setErrors(Object.fromEntries(Object.entries(data.fieldErrors).map(([key, list]) => [key, list[0]])) as FieldErrors);
+          }
+          throw new Error(data.error ?? "Something went wrong.");
         }
-        throw new Error(data.error ?? "Something went wrong.");
       }
-
       setStatus("success");
-      form.resetFields();
+      form.reset();
+      setMessageLength(0);
     } catch (err) {
       setStatus("idle");
-      messageApi.error({
-        content: `${err instanceof Error ? err.message : "Something went wrong."} You can also call us on ${company.phone.display}.`,
-        duration: 6,
-      });
+      setFormError(`${err instanceof Error ? err.message : "Something went wrong."} Please call us on ${company.phone.display}.`);
     }
   };
 
   if (status === "success") {
     return (
-      <Result
-        status="success"
-        className={styles.result}
-        title="Thanks – your quote request is on its way!"
-        subTitle={`Our team will be in touch within one business day. Need us sooner? Call ${company.phone.display}.`}
-        extra={
-          <Button type="primary" size="large" onClick={() => setStatus("idle")}>
-            Send another request
-          </Button>
-        }
-      />
+      <div className={styles.result} role="status">
+        <span className={styles.resultIcon}>{icons.check}</span>
+        <h2 className={styles.resultTitle}>Thanks – your quote request is on its way!</h2>
+        <p>
+          Our team will be in touch within one business day. Need us sooner? Call{" "}
+          <a href={company.phone.href}>{company.phone.display}</a>.
+        </p>
+        <button type="button" className="btn btn--primary" onClick={() => setStatus("idle")}>
+          Send another request
+        </button>
+      </div>
     );
   }
 
+  const field = (name: keyof ContactValues) => ({
+    id: `quote-${name}`,
+    name,
+    "aria-invalid": errors[name] ? true : undefined,
+    "aria-describedby": errors[name] ? `quote-${name}-error` : undefined,
+  });
+  const error = (name: keyof ContactValues) =>
+    errors[name] ? (
+      <p id={`quote-${name}-error`} className={styles.error}>
+        {errors[name]}
+      </p>
+    ) : null;
+
   return (
-    <>
-      {contextHolder}
-      <Form<ContactInput>
-        form={form}
-        layout="vertical"
-        size="large"
-        requiredMark="optional"
-        onFinish={onFinish}
-        onFinishFailed={() => messageApi.warning("Please check the highlighted fields.")}
-        initialValues={{ propertyType: "residential", contactMethod: "either" }}
-        scrollToFirstError={{ behavior: "smooth", block: "center" }}
-        className={styles.form}
-        disabled={status === "submitting"}
-      >
+    <form ref={formRef} className={styles.form} onSubmit={onSubmit} noValidate aria-busy={status === "submitting"}>
+      <fieldset disabled={status === "submitting"} className={styles.fieldset}>
         <div className={styles.row}>
-          <Form.Item label="Full name" name="name" rules={[{ required: true, message: "Please enter your name" }, { min: 2, message: "Please enter your name" }]}>
-            <Input autoComplete="name" placeholder="Jane Citizen" />
-          </Form.Item>
-          <Form.Item
-            label="Phone"
-            name="phone"
-            validateTrigger="onBlur"
-            rules={[
-              { required: true, message: "Please enter your phone number" },
-              {
-                validator: (_, value?: string) =>
-                  !value || isAustralianPhone(value) ? Promise.resolve() : Promise.reject(new Error("Please enter a valid Australian phone number")),
-              },
-            ]}
-          >
-            <Input type="tel" autoComplete="tel" inputMode="tel" placeholder="04xx xxx xxx" />
-          </Form.Item>
+          <div className={styles.field}>
+            <label htmlFor="quote-name">Full name</label>
+            <input {...field("name")} type="text" autoComplete="name" placeholder="Jane Citizen" required maxLength={80} />
+            {error("name")}
+          </div>
+          <div className={styles.field}>
+            <label htmlFor="quote-phone">Phone</label>
+            <input {...field("phone")} type="tel" autoComplete="tel" inputMode="tel" placeholder="04xx xxx xxx" required />
+            {error("phone")}
+          </div>
         </div>
 
         <div className={styles.row}>
-          <Form.Item
-            label="Email"
-            name="email"
-            validateTrigger="onBlur"
-            rules={[
-              { required: true, message: "Please enter your email" },
-              { type: "email", message: "Please enter a valid email address" },
-            ]}
-          >
-            <Input type="email" autoComplete="email" placeholder="you@example.com" />
-          </Form.Item>
-          <Form.Item label="Suburb" name="suburb" rules={[{ required: true, message: "Please enter your suburb" }]}>
-            <Input autoComplete="address-level2" placeholder="e.g. Norwood" />
-          </Form.Item>
+          <div className={styles.field}>
+            <label htmlFor="quote-email">Email</label>
+            <input {...field("email")} type="email" autoComplete="email" placeholder="you@example.com" required maxLength={120} />
+            {error("email")}
+          </div>
+          <div className={styles.field}>
+            <label htmlFor="quote-suburb">Suburb</label>
+            <input {...field("suburb")} type="text" autoComplete="address-level2" placeholder="e.g. Norwood" required maxLength={60} />
+            {error("suburb")}
+          </div>
         </div>
 
-        <Form.Item label="Service required" name="serviceType" rules={[{ required: true, message: "Please choose a service" }]}>
-          <Select placeholder="Select a service" options={serviceOptions} />
-        </Form.Item>
+        <div className={styles.field}>
+          <label htmlFor="quote-serviceType">Service required</label>
+          <select {...field("serviceType")} required defaultValue="">
+            <option value="" disabled>
+              Select a service
+            </option>
+            {serviceOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {error("serviceType")}
+        </div>
 
         <div className={styles.row}>
-          <Form.Item label="Property type" name="propertyType" rules={[{ required: true, message: "Please choose a property type" }]}>
-            <Radio.Group optionType="button" buttonStyle="solid" options={propertyTypes.map((o) => ({ ...o }))} className={styles.radios} />
-          </Form.Item>
-          <Form.Item label="Preferred contact method" name="contactMethod" rules={[{ required: true, message: "Please choose a contact method" }]}>
-            <Radio.Group optionType="button" buttonStyle="solid" options={contactMethods.map((o) => ({ ...o }))} className={styles.radios} />
-          </Form.Item>
+          <fieldset className={styles.choice}>
+            <legend>Property type</legend>
+            <div className={styles.segmented}>
+              {propertyTypes.map((option) => (
+                <label key={option.value}>
+                  <input type="radio" name="propertyType" value={option.value} defaultChecked={option.value === "residential"} />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset className={styles.choice}>
+            <legend>Preferred contact method</legend>
+            <div className={styles.segmented}>
+              {contactMethods.map((option) => (
+                <label key={option.value}>
+                  <input type="radio" name="contactMethod" value={option.value} defaultChecked={option.value === "either"} />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
         </div>
 
-        <Form.Item label="Tell us about your job" name="message" rules={[{ max: 2000, message: "2000 characters max" }]}>
-          <Input.TextArea
+        <div className={styles.field}>
+          <label htmlFor="quote-message">
+            Tell us about your job <span className={styles.optional}>(optional)</span>
+          </label>
+          <textarea
+            {...field("message")}
             rows={5}
-            showCount
             maxLength={2000}
-            placeholder="e.g. We'd like 4 cameras covering the driveway and backyard, or our NBN box needs moving to the study…"
+            placeholder="e.g. We'd like 4 cameras covering the driveway and backyard, or our nbn box needs a cable run to the study…"
+            onChange={(e) => setMessageLength(e.target.value.length)}
           />
-        </Form.Item>
+          <span className={styles.count} aria-live="polite">
+            {messageLength} / 2000
+          </span>
+          {error("message")}
+        </div>
 
         {/* Honeypot – hidden from people and screen readers, bots tend to fill it in */}
         <div className={styles.honeypot} aria-hidden="true">
-          <Form.Item label="Website" name="website">
-            <Input tabIndex={-1} autoComplete="off" />
-          </Form.Item>
+          <label htmlFor="quote-website">Website</label>
+          <input id="quote-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
         </div>
 
-        <Button type="primary" htmlType="submit" size="large" block loading={status === "submitting"} className={`btn-cta ${styles.submit}`}>
+        {formError && (
+          <p className={styles.formError} role="alert">
+            {formError}
+          </p>
+        )}
+
+        <button type="submit" className={`btn btn--cta btn--block btn--lg ${styles.submit}`}>
           {status === "submitting" ? "Sending…" : "Request my free quote"}
-          {status !== "submitting" && <Icon name="arrowRight" />}
-        </Button>
+          {status !== "submitting" && icons.arrow}
+        </button>
         <p className={styles.privacy}>
-          <Icon name="lock" /> Your details are only used to respond to your enquiry. We never share them.
+          {icons.lock} Your details are only used to respond to your enquiry. We never share them.
         </p>
-      </Form>
-    </>
+      </fieldset>
+    </form>
   );
 }

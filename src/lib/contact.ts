@@ -1,33 +1,15 @@
+// Server-side quote form schema (used by src/app/api/contact/route.ts).
 import { z } from "zod";
 import { services } from "@/data/services";
+import { contactMethods, isAustralianPhone, normalisePhone, propertyTypes, type Option } from "./contact-fields";
 
-/** Strips spaces, dashes, dots and brackets so "(08) 7010-1234" becomes "0870101234". */
-export const normalisePhone = (value: string) => value.replace(/[\s\-().]/g, "");
+export { contactMethods, isAustralianPhone, normalisePhone, propertyTypes };
 
-/**
- * Australian phone numbers: mobiles (04…), landlines (02/03/07/08),
- * +61 international format, and 1300 / 1800 / 13 numbers.
- */
-export function isAustralianPhone(value: string) {
-  const n = normalisePhone(value);
-  return /^(?:\+?61|0)[2-478]\d{8}$/.test(n) || /^1[38]00\d{6}$/.test(n) || /^13\d{4}$/.test(n);
-}
-
-export const serviceOptions = [
+/** Service choices for the quote form (passed to the client form as a prop). */
+export const serviceOptions: Option[] = [
   ...services.map((s) => ({ value: s.slug, label: s.title })),
   { value: "other", label: "Something else / not sure" },
 ];
-
-export const propertyTypes = [
-  { value: "residential", label: "Residential" },
-  { value: "commercial", label: "Commercial" },
-] as const;
-
-export const contactMethods = [
-  { value: "phone", label: "Phone" },
-  { value: "email", label: "Email" },
-  { value: "either", label: "Either" },
-] as const;
 
 const serviceValues = serviceOptions.map((o) => o.value) as [string, ...string[]];
 

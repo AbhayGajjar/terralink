@@ -28,6 +28,22 @@ export default function NetworkCanvas({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    // Purely decorative: skip on phones, and start only once the page is idle so the animation
+    // never competes with the initial render (better LCP / TBT).
+    if (window.matchMedia("(max-width: 767px)").matches) return;
+    let cleanup: (() => void) | undefined;
+    const init = () => {
+      cleanup = setup();
+    };
+    const useIdle = typeof window.requestIdleCallback === "function";
+    const handle = useIdle ? window.requestIdleCallback(init, { timeout: 2500 }) : window.setTimeout(init, 1500);
+    return () => {
+      if (useIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+      cleanup?.();
+    };
+
+    function setup() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
@@ -176,6 +192,7 @@ export default function NetworkCanvas({ className }: { className?: string }) {
       intersection.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
+    }
   }, []);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;

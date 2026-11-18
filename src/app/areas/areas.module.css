@@ -17,7 +17,7 @@
 }
 
 .suburbTitle :global(svg) {
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .suburbList {
@@ -92,7 +92,7 @@
   gap: 6px;
   margin-top: auto;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .allAreas {
@@ -128,5 +128,5 @@
 
 .regionList a {
   font-weight: 700;
-  color: var(--blue);
+  color: var(--blue-ink);
 }

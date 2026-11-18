@@ -139,18 +139,16 @@
   max-width: 680px;
 }
 
+/* Movement only – no fade from opacity 0, so text is visible on the first paint (better LCP). */
 .enter {
-  opacity: 0;
-  animation: enter 0.9s var(--ease-out) forwards;
+  animation: enter 0.9s var(--ease-out) both;
 }
 
 @keyframes enter {
   from {
-    opacity: 0;
     transform: translateY(26px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -520,5 +518,17 @@
 @media (max-width: 767px) {
   .hero {
     padding-bottom: 128px;
+  }
+}
+
+/* Phones: drop the continuously running decorative animations (blurred glows drifting, fibre
+   light pulses). They cost a lot of main-thread/GPU time on mid-range phones for little benefit. */
+@media (max-width: 767px) {
+  .glow,
+  .scrollCue span {
+    animation: none;
+  }
+  .fibreLight {
+    display: none;
   }
 }

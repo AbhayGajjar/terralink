@@ -82,7 +82,11 @@ export default function Footer() {
               )}
               <li>
                 <Icon name="location" />
-                <address>{fullAddress}</address>
+                <address>
+                  {company.name}
+                  <br />
+                  {fullAddress}
+                </address>
               </li>
               <li>
                 <Icon name="form" />
@@ -121,7 +125,9 @@ export default function Footer() {
           <p>
             © <CurrentYear /> {company.legalName || company.name}. All rights reserved.{company.abn ? ` ABN ${company.abn}` : ""}
           </p>
-          <BackToTop />
+          <BackToTop>
+            <Icon name="arrowUp" />
+          </BackToTop>
         </div>
       </div>
     </footer>

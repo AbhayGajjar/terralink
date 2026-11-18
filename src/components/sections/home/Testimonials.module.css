@@ -120,7 +120,12 @@
 
 .stars {
   font-size: 16px;
+  letter-spacing: 2px;
   color: #ffc24a;
+}
+
+.starsOff {
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .card blockquote {

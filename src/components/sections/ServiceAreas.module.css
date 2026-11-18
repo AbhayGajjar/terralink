@@ -35,13 +35,13 @@
 }
 
 .area:hover {
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: var(--blue-ink);
+  color: var(--blue-ink);
   transform: translateY(-2px);
 }
 
 .area :global(.anticon) {
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .cta {

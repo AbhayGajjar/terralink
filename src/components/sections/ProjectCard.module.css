@@ -92,7 +92,7 @@ button.card {
 }
 
 .meta :global(.anticon) {
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .title {

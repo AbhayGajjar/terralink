@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { company, fullAddress } from "@/data/company";
+import { company, fullAddress, mapsLink } from "@/data/company";
+import { serviceOptions } from "@/lib/contact";
 import { buildMetadata } from "@/lib/seo";
 import PageHero from "@/components/sections/PageHero";
 import ContactForm from "@/components/sections/ContactForm";
@@ -16,7 +17,7 @@ export const metadata: Metadata = buildMetadata({
 const infoCards: { icon: IconName; title: string; lines: string[]; href?: string; cta?: string }[] = [
   { icon: "phone", title: "Call us", lines: [company.phone.display], href: company.phone.href, cta: "Call now" },
   ...(company.email ? [{ icon: "mail" as IconName, title: "Email us", lines: [company.email], href: `mailto:${company.email}`, cta: "Send an email" }] : []),
-  { icon: "location", title: "Visit us", lines: [fullAddress] },
+  { icon: "location", title: "Our address", lines: [company.name, fullAddress] },
   { icon: "clock", title: "Opening hours", lines: company.openingHours.map((row) => `${row.days}: ${row.hours}`) },
 ];
 
@@ -42,11 +43,14 @@ export default function ContactPage() {
 
       <section className={`section section--light ${styles.main}`} aria-label="Quote request form and contact details">
         <div className={`container ${styles.layout}`}>
-          <Reveal className={`card ${styles.formCard}`}>
+          <div className={`card ${styles.formCard}`} id="quote-form">
             <h2 className={styles.formTitle}>Request a quote</h2>
             <p className={styles.formLead}>Fields marked optional can be left blank. Everything else helps us quote accurately.</p>
-            <ContactForm />
-          </Reveal>
+            <ContactForm
+              serviceOptions={serviceOptions}
+              icons={{ arrow: <Icon name="arrowRight" />, lock: <Icon name="lock" />, check: <Icon name="check" /> }}
+            />
+          </div>
 
           <div className={styles.side}>
             <Stagger className={styles.cards} stagger={0.08}>
@@ -88,10 +92,23 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="section section--white section--tight" aria-label="Map">
+      <section className="section section--white section--tight" aria-labelledby="find-us">
         <div className="container">
+          <div className={styles.mapHead}>
+            <h2 id="find-us" className={styles.mapTitle}>
+              Find {company.name} in {company.address.suburb}
+            </h2>
+            <address className={styles.nap}>
+              <strong>{company.name}</strong>
+              <span>{fullAddress}</span>
+              <a href={company.phone.href}>{company.phone.display}</a>
+            </address>
+            <a href={mapsLink} className="btn btn--outline btn--sm" target="_blank" rel="noopener">
+              <Icon name="location" /> Get directions
+            </a>
+          </div>
           <Reveal className={styles.mapWrap}>
-            {/* PLACEHOLDER – update company.mapEmbedUrl in src/data/company.ts */}
+            {/* Update company.mapEmbedUrl in src/data/company.ts if the pin is not exactly on the business */}
             <iframe
               src={company.mapEmbedUrl}
               title={`Map showing ${company.name} at ${fullAddress}`}

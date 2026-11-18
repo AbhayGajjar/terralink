@@ -4,6 +4,7 @@ import { buildMetadata } from "@/lib/seo";
 import { PROJECTS_ARE_REAL } from "@/data/projects";
 import PageHero from "@/components/sections/PageHero";
 import ProjectsGallery from "@/components/sections/ProjectsGallery";
+import AntdProvider from "@/components/layout/AntdProvider";
 import CtaBanner from "@/components/sections/CtaBanner";
 import Icon from "@/components/ui/Icon";
 
@@ -40,7 +41,9 @@ export default function ProjectsPage() {
 
       <section className="section section--light" aria-label="Project gallery">
         <div className="container">
-          <ProjectsGallery />
+          <AntdProvider>
+            <ProjectsGallery />
+          </AntdProvider>
         </div>
       </section>
 

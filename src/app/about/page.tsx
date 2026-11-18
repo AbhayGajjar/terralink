@@ -10,7 +10,10 @@ import ServiceAreas from "@/components/sections/ServiceAreas";
 import CtaBanner from "@/components/sections/CtaBanner";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal, { Stagger, StaggerItem } from "@/components/ui/Reveal";
-import Counter from "@/components/ui/Counter";
+import dynamic from "next/dynamic";
+
+// Only shown once real stats are added (STATS_ARE_REAL) – code-split so its JS only loads then.
+const Counter = dynamic(() => import("@/components/ui/Counter"));
 import Icon from "@/components/ui/Icon";
 import styles from "./about.module.css";
 

@@ -1,19 +1,19 @@
-.form :global(.ant-input),
-.form :global(.ant-input-affix-wrapper),
-.form :global(.ant-select-selector),
-.form :global(.ant-select) {
-  background: var(--off-white);
+.form {
+  position: relative;
 }
 
-.form :global(.ant-input:focus),
-.form :global(.ant-input-affix-wrapper-focused),
-.form :global(.ant-select-focused) {
-  background: #fff;
+.fieldset {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
 }
 
 .row {
   display: grid;
-  gap: 0 20px;
+  gap: 18px 20px;
 }
 
 @media (min-width: 640px) {
@@ -22,15 +22,149 @@
   }
 }
 
-.radios {
-  display: flex;
-  width: 100%;
+.field {
+  position: relative;
+  display: grid;
+  gap: 6px;
 }
 
-.radios :global(.ant-radio-button-wrapper) {
+.field label,
+.choice legend {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid #c9d3e3;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 16px; /* 16px stops iOS zooming into the field */
+  color: var(--ink);
+  background: var(--off-white);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.field select {
+  appearance: none;
+  padding-right: 40px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 22px) 52%, calc(100% - 16px) 52%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #7a879c;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: var(--blue);
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-color: var(--blue);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(30, 111, 255, 0.2);
+}
+
+.field [aria-invalid="true"] {
+  border-color: #c62828;
+  background-color: #fff8f8;
+}
+
+.error {
+  margin: 0;
+  font-size: 14px;
+  color: #b71c1c;
+}
+
+.count {
+  justify-self: end;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Segmented radio buttons */
+.choice {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.choice legend {
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+.segmented {
+  display: flex;
+  border: 1px solid #c9d3e3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--off-white);
+}
+
+.segmented label {
+  position: relative;
   flex: 1;
-  text-align: center;
-  padding-inline: 10px;
+}
+
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.segmented span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.segmented label + label span {
+  border-left: 1px solid #c9d3e3;
+}
+
+.segmented input:checked + span {
+  color: #fff;
+  background: var(--blue-ink);
+}
+
+.segmented input:focus-visible + span {
+  outline: 2px solid var(--blue);
+  outline-offset: -4px;
+  border-radius: 8px;
 }
 
 .honeypot {
@@ -41,10 +175,19 @@
   overflow: hidden;
 }
 
+.formError {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #8e1414;
+  background: #fdecec;
+  border: 1px solid #f4c4c4;
+}
+
 .submit {
-  margin-top: 8px;
-  height: 58px !important;
-  font-size: 17px !important;
+  min-height: 58px;
+  font-size: 17px;
 }
 
 .privacy {
@@ -52,17 +195,39 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 14px;
+  margin: 0;
   font-size: 13px;
   color: var(--muted);
   text-align: center;
 }
 
 .result {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
   padding: 32px 8px;
+  text-align: center;
 }
 
-.result :global(.ant-result-title) {
+.resultIcon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  font-size: 30px;
+  color: #fff;
+  background: #1b8a4b;
+}
+
+.resultTitle {
+  margin: 0;
   font-family: var(--font-heading);
+  font-size: 1.5rem;
   font-weight: 800;
+}
+
+.result p {
+  margin: 0 0 8px;
+  color: var(--muted);
 }

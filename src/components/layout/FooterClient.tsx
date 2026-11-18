@@ -1,9 +1,9 @@
 "use client";
 
-import Icon from "@/components/ui/Icon";
+import type { ReactNode } from "react";
 import styles from "./Footer.module.css";
 
-export function BackToTop() {
+export function BackToTop({ children }: { children: ReactNode }) {
   return (
     <button
       type="button"
@@ -11,7 +11,7 @@ export function BackToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Back to top"
     >
-      <Icon name="arrowUp" />
+      {children}
     </button>
   );
 }

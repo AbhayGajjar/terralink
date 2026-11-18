@@ -17,5 +17,5 @@
 }
 
 .includedTitle :global(svg) {
-  color: var(--blue);
+  color: var(--blue-ink);
 }

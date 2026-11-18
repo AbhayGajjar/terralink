@@ -1,15 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
+import ReactDOM from "react-dom";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { company } from "@/data/company";
 import { localBusinessJsonLd, siteUrl, websiteJsonLd } from "@/lib/seo";
 import Analytics from "@/components/layout/Analytics";
-import Providers from "@/components/layout/Providers";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingActions from "@/components/layout/FloatingActions";
 import JsonLd from "@/components/ui/JsonLd";
+import Icon from "@/components/ui/Icon";
 import "./globals.css";
 
 const inter = Inter({
@@ -53,22 +53,21 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  // Placeholder photos are served from Unsplash: open that connection early (hero image = LCP).
+  // Remove once all images are local files in /public.
+  ReactDOM.preconnect("https://images.unsplash.com");
   return (
     <html lang="en-AU" className={`${inter.variable} ${jakarta.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <AntdRegistry>
-          <Providers>
-            <Header />
-            <main id="main">{children}</main>
-            <Footer />
-            <Suspense fallback={null}>
-              <FloatingActions />
-            </Suspense>
-          </Providers>
-        </AntdRegistry>
+        <Header />
+        <main id="main">{children}</main>
+        <Footer />
+        <Suspense fallback={null}>
+          <FloatingActions callIcon={<Icon name="phone" />} quoteIcon={<Icon name="form" />} />
+        </Suspense>
         <JsonLd data={[localBusinessJsonLd(), websiteJsonLd()]} />
         <Analytics />
       </body>

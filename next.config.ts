@@ -15,7 +15,8 @@ const nextConfig: NextConfig = {
   // at module scope (e.g. its portal scroll-locker), which Cache Components rejects during
   // prerendering. Every page here is static content, so all routes are still prerendered at build time.
   images: {
-    unoptimized: isStaticExport,
+    // Static hosting has no optimisation server, so a custom loader resizes via the image CDN.
+    ...(isStaticExport && { loader: "custom" as const, loaderFile: "./src/lib/image-loader.ts" }),
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
@@ -32,6 +33,8 @@ const nextConfig: NextConfig = {
     },
   }),
   // Tree-shake Ant Design and its icon set so only the components we use are bundled.
+  // Note: experimental.inlineCss was tested and made pages slower here (Next also embeds the CSS
+  // in the RSC payload, roughly doubling HTML size), so stylesheets stay as cacheable files.
   experimental: {
     optimizePackageImports: ["antd", "@ant-design/icons"],
   },

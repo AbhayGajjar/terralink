@@ -36,6 +36,16 @@
     right: 28px;
     bottom: 28px;
     z-index: 900;
+    opacity: 0;
+    transform: translateY(24px) scale(0.9);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.35s var(--ease-out), visibility 0.35s;
+  }
+
+  .desktopVisible {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
   }
 }
 

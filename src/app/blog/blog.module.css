@@ -19,12 +19,12 @@
 }
 
 .categories a:hover {
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: var(--blue-ink);
+  color: var(--blue-ink);
 }
 
 .categories .categoryActive {
-  border-color: var(--blue);
+  border-color: var(--blue-ink);
   background: var(--blue);
   color: #fff;
 }
@@ -63,7 +63,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--blue-ink);
   text-decoration: none;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .postTitle a:hover {
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .postDesc {
@@ -101,7 +101,7 @@
   align-items: center;
   gap: 6px;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--blue-ink);
   text-decoration: none;
 }
 
@@ -161,7 +161,7 @@
 .authorRole {
   margin: 2px 0 8px;
   font-size: 14px;
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .authorBio {
@@ -217,7 +217,7 @@
 }
 
 .toc a:hover {
-  color: var(--blue);
+  color: var(--blue-ink);
   text-decoration: underline;
 }
 

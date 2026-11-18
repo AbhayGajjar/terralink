@@ -92,7 +92,7 @@
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .text h3 {

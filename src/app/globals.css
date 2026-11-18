@@ -9,6 +9,8 @@
   --navy-deep: #061430;
   --navy-soft: #13306a;
   --blue: #1e6fff;
+  /* Text-safe brand blue: ≥ 4.5:1 contrast on white, off-white and --blue-soft (WCAG AA). */
+  --blue-ink: #1a62e6;
   --blue-soft: #e8f0ff;
   --cyan: #00d4ff;
   --orange: #ff8a1f;
@@ -281,7 +283,7 @@ ol {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--blue-ink);
   background: var(--blue-soft);
   border: 1px solid rgba(30, 111, 255, 0.16);
 }
@@ -409,12 +411,12 @@ ol {
 
 .btn--primary {
   color: #fff;
-  background: var(--blue);
+  background: var(--blue-ink); /* white text on --blue-ink passes WCAG AA (5.3:1) */
   box-shadow: var(--shadow-glow-blue);
 }
 
 .btn--primary:hover {
-  background: #3a82ff;
+  background: #1557d6;
 }
 
 .btn--outline-light {
@@ -437,8 +439,8 @@ ol {
 }
 
 .btn--outline:hover {
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: var(--blue-ink);
+  color: var(--blue-ink);
   box-shadow: var(--shadow-md);
 }
 
@@ -512,7 +514,7 @@ ol {
 }
 
 .icon-tile--soft {
-  color: var(--blue);
+  color: var(--blue-ink);
   background: var(--blue-soft);
   box-shadow: none;
 }
@@ -585,6 +587,45 @@ ol {
   }
 }
 
+/* ---------- Icons (inline SVG, see components/ui/Icon.tsx) ---------- */
+
+.anticon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  vertical-align: -0.125em;
+  color: inherit;
+  font-style: normal;
+  text-align: center;
+  text-transform: none;
+}
+
+/* ---------- Scroll reveal (CSS only, no JavaScript) ---------- */
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      /* A fixed distance (not a % of the element) so tall elements, e.g. the quote form, finish
+         revealing instead of staying semi-transparent. */
+      animation-range: entry 0% entry 160px;
+    }
+  }
+}
+
 /* ---------- Long-form content (Markdown) ---------- */
 
 .prose {
@@ -631,12 +672,12 @@ ol {
 }
 
 .prose li::marker {
-  color: var(--blue);
+  color: var(--blue-ink);
   font-weight: 700;
 }
 
 .prose a {
-  color: var(--blue);
+  color: var(--blue-ink);
   font-weight: 600;
   text-decoration: underline;
   text-decoration-thickness: 1px;

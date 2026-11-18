@@ -83,7 +83,7 @@
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .miniStats span {
@@ -135,7 +135,7 @@
   margin: 0 auto;
   border-radius: 50%;
   font-size: 34px;
-  color: var(--blue);
+  color: var(--blue-ink);
   background: linear-gradient(145deg, var(--blue-soft), #fff);
   border: 1px solid rgba(30, 111, 255, 0.18);
   box-shadow: 0 0 0 6px rgba(30, 111, 255, 0.05);
@@ -146,7 +146,7 @@
   margin-top: 4px;
   font-size: 13.5px;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--blue-ink);
 }
 
 .member p {

@@ -6,11 +6,13 @@ import { buildMetadata, faqJsonLd } from "@/lib/seo";
 import Hero from "@/components/sections/home/Hero";
 import ServicesOverview from "@/components/sections/home/ServicesOverview";
 import WhyChoose from "@/components/sections/home/WhyChoose";
-import StatsStrip from "@/components/sections/home/StatsStrip";
+import dynamic from "next/dynamic";
 import HowItWorks from "@/components/sections/home/HowItWorks";
 import NbnExplainer from "@/components/sections/home/NbnExplainer";
 import FeaturedProjects from "@/components/sections/home/FeaturedProjects";
-import Testimonials from "@/components/sections/home/Testimonials";
+// Hidden until real data is added (see src/data/home.ts) – code-split so their JS only loads when shown.
+const StatsStrip = dynamic(() => import("@/components/sections/home/StatsStrip"));
+const Testimonials = dynamic(() => import("@/components/sections/home/Testimonials"));
 import FaqSection from "@/components/sections/FaqSection";
 import CtaBanner from "@/components/sections/CtaBanner";
 import SectionHeading from "@/components/ui/SectionHeading";

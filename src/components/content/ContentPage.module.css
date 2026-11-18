@@ -127,7 +127,7 @@
 }
 
 .toc a:hover {
-  color: var(--blue);
+  color: var(--blue-ink);
   text-decoration: underline;
 }
 

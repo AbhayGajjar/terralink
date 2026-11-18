@@ -1,89 +1,81 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { Segmented } from "antd";
-import { AnimatePresence, motion } from "framer-motion";
 import { nbnTechnologies } from "@/data/home";
 import Icon from "@/components/ui/Icon";
 import styles from "./NbnExplainer.module.css";
 
-const ease = [0.22, 1, 0.36, 1] as const;
-
+/**
+ * NBN technology explainer with CSS-only tabs (radio inputs + :checked). All four panels are in
+ * the server-rendered HTML, so search engines can read every explanation and no JavaScript is needed.
+ */
 export default function NbnExplainer() {
-  const [active, setActive] = useState(nbnTechnologies[0].key);
-  const tech = nbnTechnologies.find((t) => t.key === active) ?? nbnTechnologies[0];
-
   return (
     <div className={styles.wrap}>
-      <div className={styles.switcher}>
-        <Segmented
-          size="large"
-          shape="round"
-          value={active}
-          onChange={(value) => setActive(value)}
-          options={nbnTechnologies.map((t) => ({ label: t.name, value: t.key }))}
-          className={styles.segmented}
-          aria-label="Choose an NBN technology"
+      {nbnTechnologies.map((tech, i) => (
+        <input
+          key={tech.key}
+          type="radio"
+          name="nbn-technology"
+          id={`nbn-tab-${tech.key}`}
+          className={`${styles.radio} ${styles[`r${i}`]}`}
+          defaultChecked={i === 0}
         />
+      ))}
+      <div className={styles.switcher} role="group" aria-label="Choose an NBN technology">
+        {nbnTechnologies.map((tech, i) => (
+          <label key={tech.key} htmlFor={`nbn-tab-${tech.key}`} className={`${styles.tab} ${styles[`t${i}`]}`}>
+            {tech.name}
+          </label>
+        ))}
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={tech.key}
-          className={`glass-card ${styles.panel}`}
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.4, ease }}
-          role="region"
-          aria-live="polite"
-          aria-label={`${tech.name} – ${tech.fullName}`}
-        >
-          <div className={styles.main}>
-            <span className={styles.code}>{tech.name}</span>
-            <h3 className={styles.name}>{tech.fullName}</h3>
-            <p className={styles.summary}>{tech.summary}</p>
+      <div className={styles.panels}>
+        {nbnTechnologies.map((tech, i) => (
+          <section key={tech.key} className={`glass-card ${styles.panel} ${styles[`p${i}`]}`} aria-label={`${tech.name} – ${tech.fullName}`}>
+            <div className={styles.main}>
+              <span className={styles.code}>{tech.name}</span>
+              <h3 className={styles.name}>{tech.fullName}</h3>
+              <p className={styles.summary}>{tech.summary}</p>
 
-            <div className={styles.blocks}>
-              <div>
-                <h4>
-                  <Icon name="bolt" /> How it works
-                </h4>
-                <p>{tech.howItWorks}</p>
-              </div>
-              <div>
-                <h4>
-                  <Icon name="home" /> Best for
-                </h4>
-                <p>{tech.bestFor}</p>
+              <div className={styles.blocks}>
+                <div>
+                  <h4>
+                    <Icon name="bolt" /> How it works
+                  </h4>
+                  <p>{tech.howItWorks}</p>
+                </div>
+                <div>
+                  <h4>
+                    <Icon name="home" /> Best for
+                  </h4>
+                  <p>{tech.bestFor}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <aside className={styles.side}>
-            <Diagram techKey={tech.key} />
+            <aside className={styles.side}>
+              <Diagram techKey={tech.key} />
 
-            <Meter label="Speed potential" value={tech.speed.label} score={tech.speed.score} />
-            <Meter label="Reliability" value={tech.reliability.label} score={tech.reliability.score} />
+              <Meter label="Speed potential" value={tech.speed.label} score={tech.speed.score} />
+              <Meter label="Reliability" value={tech.reliability.label} score={tech.reliability.score} />
 
-            <div className={styles.equipment}>
-              <h4>Equipment at your place</h4>
-              <ul>
-                {tech.equipment.map((item) => (
-                  <li key={item}>
-                    <Icon name="check" /> {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              <div className={styles.equipment}>
+                <h4>Equipment at your place</h4>
+                <ul>
+                  {tech.equipment.map((item) => (
+                    <li key={item}>
+                      <Icon name="check" /> {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <Link href={`/services/${tech.serviceSlug}`} className="btn btn--outline-light btn--block">
-              {tech.name} installation <Icon name="arrowRight" />
-            </Link>
-          </aside>
-        </motion.div>
-      </AnimatePresence>
+              <Link href={`/services/${tech.serviceSlug}`} className="btn btn--outline-light btn--block">
+                {tech.name} installation <Icon name="arrowRight" />
+              </Link>
+            </aside>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
@@ -96,12 +88,7 @@ function Meter({ label, value, score }: { label: string; value: string; score: n
         <strong>{value}</strong>
       </div>
       <div className={styles.meterTrack} role="meter" aria-valuenow={score} aria-valuemin={0} aria-valuemax={100} aria-label={label}>
-        <motion.div
-          className={styles.meterFill}
-          initial={{ width: 0 }}
-          animate={{ width: `${score}%` }}
-          transition={{ duration: 0.9, ease, delay: 0.15 }}
-        />
+        <div className={styles.meterFill} style={{ width: `${score}%` }} />
       </div>
     </div>
   );

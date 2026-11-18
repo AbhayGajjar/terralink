@@ -1,109 +1,19 @@
-"use client";
-
 import type { CSSProperties } from "react";
-import {
-  ApiOutlined,
-  ArrowRightOutlined,
-  ArrowUpOutlined,
-  CalendarOutlined,
-  CheckCircleFilled,
-  CheckOutlined,
-  ClockCircleOutlined,
-  CloudServerOutlined,
-  ClusterOutlined,
-  CustomerServiceOutlined,
-  DashboardOutlined,
-  DollarOutlined,
-  EnvironmentOutlined,
-  EyeOutlined,
-  FacebookFilled,
-  FileProtectOutlined,
-  FileSearchOutlined,
-  FormOutlined,
-  GoogleOutlined,
-  HeartOutlined,
-  HomeOutlined,
-  InstagramOutlined,
-  LinkedinFilled,
-  LockOutlined,
-  MailOutlined,
-  MobileOutlined,
-  NodeIndexOutlined,
-  PhoneOutlined,
-  RocketOutlined,
-  SafetyCertificateOutlined,
-  SafetyOutlined,
-  ScheduleOutlined,
-  SearchOutlined,
-  ShopOutlined,
-  SmileOutlined,
-  StarFilled,
-  TeamOutlined,
-  ThunderboltOutlined,
-  ToolOutlined,
-  TrophyOutlined,
-  VideoCameraOutlined,
-  WifiOutlined,
-} from "@ant-design/icons";
+import type { IconName } from "./icon-registry";
+
+export type { IconName };
 
 /**
- * Central icon registry. Data files refer to icons by name so content can live
- * in plain TypeScript (and in Server Components) without importing React icons.
+ * Site icon. References a symbol in the shared /icons.svg sprite (generated at build time from
+ * ./icon-registry.ts), so each icon costs ~80 bytes of HTML and the artwork is downloaded once
+ * and cached. Works in Server and Client Components with no icon code in page JavaScript.
  */
-const icons = {
-  fibre: NodeIndexOutlined,
-  node: ClusterOutlined,
-  cable: ApiOutlined,
-  camera: VideoCameraOutlined,
-  wifi: WifiOutlined,
-  server: CloudServerOutlined,
-  bolt: ThunderboltOutlined,
-  safety: SafetyCertificateOutlined,
-  insured: FileProtectOutlined,
-  shield: SafetyOutlined,
-  lock: LockOutlined,
-  star: StarFilled,
-  team: TeamOutlined,
-  tool: ToolOutlined,
-  clock: ClockCircleOutlined,
-  dollar: DollarOutlined,
-  location: EnvironmentOutlined,
-  home: HomeOutlined,
-  shop: ShopOutlined,
-  sparkle: SmileOutlined,
-  heart: HeartOutlined,
-  trophy: TrophyOutlined,
-  rocket: RocketOutlined,
-  eye: EyeOutlined,
-  mobile: MobileOutlined,
-  dashboard: DashboardOutlined,
-  support: CustomerServiceOutlined,
-  calendar: CalendarOutlined,
-  schedule: ScheduleOutlined,
-  form: FormOutlined,
-  search: SearchOutlined,
-  survey: FileSearchOutlined,
-  phone: PhoneOutlined,
-  mail: MailOutlined,
-  check: CheckOutlined,
-  checkCircle: CheckCircleFilled,
-  arrowRight: ArrowRightOutlined,
-  arrowUp: ArrowUpOutlined,
-  facebook: FacebookFilled,
-  instagram: InstagramOutlined,
-  linkedin: LinkedinFilled,
-  google: GoogleOutlined,
-} as const;
-
-export type IconName = keyof typeof icons;
-
-interface IconProps {
-  name: IconName;
-  className?: string;
-  style?: CSSProperties;
-}
-
-export default function Icon({ name, className, style }: IconProps) {
-  const Component = icons[name];
-  return <Component className={className} style={style} aria-hidden="true" />;
+export default function Icon({ name, className, style }: { name: IconName; className?: string; style?: CSSProperties }) {
+  return (
+    <span className={`anticon ${className ?? ""}`} style={style} aria-hidden="true">
+      <svg width="1em" height="1em" fill="currentColor" focusable="false">
+        <use href={`/icons.svg#i-${name}`} />
+      </svg>
+    </span>
+  );
 }
