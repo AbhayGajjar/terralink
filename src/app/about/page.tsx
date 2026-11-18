@@ -142,7 +142,7 @@ export default function AboutPage() {
           <SectionHeading
             id="certs-title"
             eyebrow="Certifications & insurance"
-            title="Qualified, licensed and fully insured"
+            title="Registrations, licences and insurance"
             lead="Peace of mind is part of every job. Here's what stands behind our work."
           />
           <Stagger className="grid grid--3">

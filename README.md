@@ -27,18 +27,17 @@ npm run dev                  # http://localhost:3000
 
 ## Environment variables
 
-Set these in `.env.local` for local development and in your hosting provider (e.g. Vercel → Project → Settings → Environment Variables) for production.
+Set these in `.env.local` for local development, and for the live site as **GitHub Actions variables** (Settings → Secrets and variables → Actions → Variables). See [SEO-CHECKLIST.md](SEO-CHECKLIST.md) for step-by-step instructions.
 
-| Variable               | Required | Description                                                                                                                                  |
-| ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `RESEND_API_KEY`       | Yes      | API key from [resend.com/api-keys](https://resend.com/api-keys).                                                                             |
-| `CONTACT_EMAIL`        | Yes      | Inbox that receives quote requests. Comma-separate multiple addresses.                                                                       |
-| `CONTACT_FROM_EMAIL`   | No       | "From" address, e.g. `TerraLink Website <website@terralink.com.au>`. Must be on a domain verified in Resend. Defaults to `onboarding@resend.dev`. |
-| `NEXT_PUBLIC_SITE_URL` | No       | Public URL used for canonical links, sitemap and Open Graph. Defaults to the `url` in `src/data/company.ts`.                                 |
+| Variable | Used for |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Canonical URLs, sitemap, Open Graph and structured data. `https://www.terralink.net.au` |
+| `GOOGLE_SITE_VERIFICATION` | Google Search Console HTML-tag verification (optional) |
+| `BING_SITE_VERIFICATION` | Bing Webmaster Tools meta-tag verification (optional) |
+| `NEXT_PUBLIC_GA_ID` | Google Analytics 4 (optional – only loaded when set) |
+| `RESEND_API_KEY`, `CONTACT_EMAIL`, `CONTACT_FROM_EMAIL` | Server-side quote form (`/api/contact`) – only used when running on a Node server such as Render, not on GitHub Pages |
 
-**Testing locally without Resend:** if `RESEND_API_KEY` / `CONTACT_EMAIL` are missing in development, form submissions are validated and printed to the terminal instead of emailed, so you can test the form straight away. In production, missing keys return a friendly error asking the visitor to call or email.
-
-**Resend setup:** create an account, add and verify your domain (DNS records), create an API key, then set `CONTACT_FROM_EMAIL` to an address on that domain. Until the domain is verified, Resend's test sender can only deliver to the email address on your Resend account.
+On GitHub Pages the quote form is delivered by FormSubmit to `company.quoteEmail` (see `src/data/company.ts`). In development without Resend keys, submissions are printed to the terminal.
 
 ---
 
@@ -61,6 +60,26 @@ Each service object generates a card on the home and services pages, a detail pa
 - **Edit** a service by changing its fields.
 - **Add** a service by appending a new object with a unique `slug` – its page is generated automatically.
 - Changing a `slug` changes its URL, so update any links you've shared.
+
+### Landing pages – `src/data/landing-pages.ts`
+
+Keyword landing pages at the site root (`/nbn-installation-adelaide`, `/fttp-installation-adelaide`, `/fttp-upgrade-adelaide`, `/cctv-installation-adelaide`). Content is Markdown inside the data file.
+
+### Service areas – `src/data/areas.ts`
+
+One page per area at `/areas/<slug>`. The three included areas are examples – see the comments in the file before adding more.
+
+### FAQ hub – `src/data/faqs.ts`
+
+Grouped questions shown on `/faq` (with FAQPage structured data). Link to a group with `/faq#<group-id>`.
+
+### Blog – `src/content/blog/*.md`
+
+One Markdown file per post with a small frontmatter block (title, description, date, category, author, tags, related links) – the format is documented at the top of `src/lib/blog.ts`. Categories and authors live in `src/data/blog.ts`. Files starting with `_` are drafts. Posts automatically get a page, an Article schema, a share image, a sitemap entry, related posts and a place in the blog index.
+
+### Honesty flags
+
+Placeholder claims are hidden until you confirm them: `STATS_ARE_REAL`, `TESTIMONIALS_ARE_REAL` (`src/data/home.ts`), `TEAM_IS_REAL` and `certifications[].verified` (`src/data/about.ts`), `PROJECTS_ARE_REAL` (`src/data/projects.ts`), and `trustBadges[].verified`, `rating`, `nbnNetworkAuthorised` (`src/data/company.ts`).
 
 ### Projects – `src/data/projects.ts`
 
@@ -117,16 +136,21 @@ src/
 
 ---
 
-## Deploying to Vercel
+## Deployment
 
-1. Push this repository to GitHub, GitLab or Bitbucket.
-2. Go to [vercel.com/new](https://vercel.com/new) and import the repository. The Next.js preset is detected automatically – no build settings need changing.
-3. Add the environment variables listed above (`RESEND_API_KEY`, `CONTACT_EMAIL`, and optionally `CONTACT_FROM_EMAIL`, `NEXT_PUBLIC_SITE_URL`).
-4. Click **Deploy**.
-5. Add your domain under Project → Settings → Domains and follow the DNS instructions.
-6. After launch, submit `https://your-domain/sitemap.xml` in [Google Search Console](https://search.google.com/search-console) and link your Google Business Profile to the site.
+The live site, **https://www.terralink.net.au**, is a static export hosted on **GitHub Pages**. Every push to `main` runs `.github/workflows/pages.yml`, which builds with `NEXT_PUBLIC_STATIC_EXPORT=true` and publishes the `out/` folder. The custom domain is set under GitHub → Settings → Pages.
 
-Every push to the main branch redeploys automatically; other branches get preview URLs.
+`render.yaml` describes an alternative Node deployment on Render (real redirects, image optimisation and the Resend-powered quote API). Only one host should serve the domain.
+
+---
+
+## SEO tooling
+
+- `npm run seo:check` (after `npm run build`, or `npm run seo:check -- out` for the static export) – titles, descriptions, H1s, canonicals, share images, JSON-LD validity, broken internal links and click depth from the home page.
+- `src/lib/routes.ts` lists every indexable page; it drives `sitemap.xml` and the per-page share images in `src/app/og/[image]/route.tsx`.
+- `src/lib/seo.ts` builds page metadata and all structured data.
+- `src/data/redirects.ts` keeps old URLs working – never remove entries.
+- See [SEO-CHECKLIST.md](SEO-CHECKLIST.md) for placeholders, env vars and Search Console / Bing setup.
 
 ---
 
@@ -136,4 +160,5 @@ Every push to the main branch redeploys automatically; other branches get previe
 - **AntD SSR styles** are extracted with `@ant-design/nextjs-registry`, so there's no flash of unstyled components.
 - **Contact form protection:** server-side zod validation, a hidden honeypot field, and a basic in-memory rate limit (5 requests / 10 minutes per IP, per server instance). For heavier spam, add a service such as Cloudflare Turnstile.
 - **Accessibility & motion:** animations respect `prefers-reduced-motion`; the testimonials carousel pauses on hover/focus/touch.
-- **SEO:** per-page metadata and Open Graph tags, canonical URLs, `sitemap.xml`, `robots.txt`, and JSON-LD for LocalBusiness, Service, FAQPage and BreadcrumbList.
+- **SEO:** per-page metadata, canonical URLs, generated share images, `sitemap.xml`, `robots.txt`, and JSON-LD for LocalBusiness, WebSite, Service, FAQPage, BreadcrumbList and BlogPosting.
+- **Performance:** icons come from one cached SVG sprite (`/icons.svg`); scroll reveals are CSS-only; Ant Design and framer-motion are only loaded by the (unlisted) projects gallery.

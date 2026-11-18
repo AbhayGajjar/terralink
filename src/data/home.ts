@@ -1,17 +1,32 @@
 import type { IconName } from "@/components/ui/Icon";
+import { company } from "@/data/company";
 
-/** "Why choose TerraLink" feature points */
+const verifiedBadge = (label: string) => company.trustBadges.some((b) => b.label === label && b.verified);
+const isInsured = verifiedBadge("Fully insured");
+const isRegisteredCabler = verifiedBadge("Registered cablers");
+
+/**
+ * "Why choose TerraLink" feature points. Claims about insurance only appear once the matching
+ * trust badge in src/data/company.ts is marked verified. PLACEHOLDER – confirm the promises
+ * below (call-out fees, response times) match how you actually work.
+ */
 export const features: { title: string; description: string; icon: IconName }[] = [
   {
-    title: "Experienced technicians",
-    description: "Our team has completed thousands of NBN and security installs across SA – we've seen (and solved) it all.",
+    title: "Every nbn technology",
+    description: "We work on FTTP, FTTN, FTTC and HFC connections and on CCTV systems, so the whole job can be sorted in one visit.",
     icon: "tool",
   },
-  {
-    title: "Fully insured",
-    description: "Public liability and professional indemnity cover on every job, so you're protected from start to finish.",
-    icon: "insured",
-  },
+  isInsured
+    ? {
+        title: "Fully insured",
+        description: "Public liability cover on every job, so you're protected from start to finish.", // PLACEHOLDER – confirm cover
+        icon: "insured",
+      }
+    : {
+        title: "Honest advice",
+        description: "We'll tell you whether a problem is ours to fix or one for your internet provider – and never sell you work you don't need.",
+        icon: "support",
+      },
   {
     title: "Fast turnaround",
     description: "Quick quotes, flexible booking windows and technicians who turn up when they say they will.",
@@ -199,25 +214,30 @@ export const testimonials: { name: string; location: string; service: string; ra
 /** General FAQs shown on the home page */
 export const homeFaqs: { question: string; answer: string }[] = [
   {
-    question: "Which areas of South Australia do you service?",
-    answer:
-      "We cover all of metropolitan Adelaide plus the Adelaide Hills, Barossa, Gawler, Fleurieu Peninsula and surrounding regions. Contact us if you're further afield – we regularly travel for larger jobs.",
+    question: "Which areas do you service?",
+    answer: `We're based in ${company.address.suburb} and cover metropolitan Adelaide and surrounding areas, including the Adelaide Hills, Gawler and the Barossa. Contact us if you're further afield – we regularly travel for larger jobs.`,
   },
   {
-    question: "Do you work directly for NBN Co?",
-    answer:
-      "TerraLink works with NBN delivery partners and directly with homeowners, builders and businesses. We can complete installation, relocation and in-premises wiring work – your internet plan itself is arranged through your chosen provider.",
+    question: `Is ${company.name} part of nbn or an internet provider?`,
+    answer: company.nbnNetworkAuthorised
+      ? `No – ${company.name} is an independent contractor, not nbn and not an internet provider. Our technicians are authorised to work on the nbn network, and we also do all the cabling and set-up inside your property. Your internet plan is arranged through the provider of your choice.`
+      : `No – ${company.name} is an independent installation and cabling contractor, not nbn and not an internet provider. Your plan and any nbn appointment are arranged through your provider; we take care of the cabling, wiring and set-up on your property.`,
   },
   {
     question: "How quickly can you book in a job?",
     answer:
       "Most quotes are returned within one business day and we can usually schedule installations within the same week, depending on the work required.",
   },
-  {
-    question: "Are your technicians licensed and insured?",
-    answer:
-      "Yes. Our technicians hold the relevant cabling registrations and training for the work they perform, and TerraLink carries full public liability insurance.",
-  },
+  // Only shown once both claims are marked verified in src/data/company.ts (trustBadges).
+  ...(isInsured && isRegisteredCabler
+    ? [
+        {
+          question: "Are your technicians registered and insured?",
+          answer:
+            "Yes. Our technicians hold the cabling registrations required for the work they perform, and we carry public liability insurance. Ask us for details with your quote.",
+        },
+      ]
+    : []),
   {
     question: "Do you offer fixed-price quotes?",
     answer:

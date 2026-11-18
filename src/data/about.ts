@@ -1,10 +1,15 @@
 import type { IconName } from "@/components/ui/Icon";
+import { company } from "@/data/company";
 
-/** PLACEHOLDER – replace with TerraLink's real story */
+/**
+ * PLACEHOLDER – replace with TerraLink's real story: who started it, when, your experience and why
+ * customers choose you. Real, specific detail (names, years, numbers you can prove) builds trust
+ * with customers and with Google. Until then this neutral description is shown.
+ */
 export const story = [
-  "TerraLink started with a simple idea: telecommunications work should be done properly, explained clearly and left looking tidy. Founded in South Australia by technicians who'd spent years on the tools, we saw too many rushed installs, unexplained delays and cables stapled across walls.",
-  "Today our team installs and maintains NBN connections across every fixed-line technology – FTTP, FTTN, FTTC and HFC – and designs CCTV and security camera systems for homes, small businesses and commercial sites throughout Adelaide and regional SA.",
-  "We're still locally owned and operated, and we still measure success the same way: a connection that works, a customer who understands it and a site we'd be proud to show anyone.",
+  `${company.name} is an Adelaide telecommunications contractor based in ${company.address.suburb}. We believe telecommunications work should be done properly, explained clearly and left looking tidy.`,
+  "We work on every fixed-line nbn technology – FTTP, FTTN, FTTC and HFC – doing the cabling, wiring and set-up that gets your connection working where you need it, and we design and install CCTV and security camera systems for homes and businesses.",
+  "We measure success simply: a connection that works, a customer who understands it and a site we'd be proud to show anyone.",
 ];
 
 export const mission =
@@ -14,7 +19,7 @@ export const values: { title: string; description: string; icon: IconName }[] = 
   { title: "Quality first", description: "We'd rather take an extra ten minutes than leave a job we're not proud of.", icon: "trophy" },
   { title: "Straight talk", description: "Clear advice and honest, fixed-price quotes – no jargon and no surprises.", icon: "support" },
   { title: "Respect your space", description: "Shoe covers, drop sheets and a spotless finish. Your property, treated like ours.", icon: "home" },
-  { title: "Safety always", description: "Fully insured, properly trained and compliant with Australian standards on every job.", icon: "shield" },
+  { title: "Safety always", description: "Safe work practices and Australian standards on every job, with no shortcuts.", icon: "shield" },
 ];
 
 /** PLACEHOLDER TEAM – replace names, roles and add real photos, then set TEAM_IS_REAL to true (hidden until then). */
