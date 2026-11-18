@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { company } from "@/data/company";
+import { areas } from "@/data/areas";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal, { Stagger, StaggerItem } from "@/components/ui/Reveal";
 import Icon from "@/components/ui/Icon";
@@ -14,18 +15,21 @@ export default function ServiceAreas() {
             id="areas-title"
             align="left"
             eyebrow="Service areas"
-            title="Proudly servicing Adelaide & regional SA"
+            title="Proudly servicing Adelaide & surrounds"
             lead="Our technicians cover metropolitan Adelaide and surrounding regions every day. Not sure if we reach you? Just ask – we regularly travel for larger jobs."
           />
           <Stagger className={styles.areas} stagger={0.04}>
-            {company.serviceAreas.map((area) => (
-              <StaggerItem key={area} className={styles.area}>
-                <Icon name="location" /> {area}
-              </StaggerItem>
-            ))}
+            {company.serviceAreas.map((area) => {
+              const page = areas.find((a) => a.name === area);
+              return (
+                <StaggerItem key={area} className={styles.area}>
+                  <Icon name="location" /> {page ? <Link href={`/areas/${page.slug}`}>{area}</Link> : area}
+                </StaggerItem>
+              );
+            })}
           </Stagger>
-          <Link href="/contact" className={`btn btn--primary ${styles.cta}`}>
-            Check your area <Icon name="arrowRight" />
+          <Link href="/areas" className={`btn btn--primary ${styles.cta}`}>
+            See our service areas <Icon name="arrowRight" />
           </Link>
         </div>
 

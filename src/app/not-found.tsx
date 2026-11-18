@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { company } from "@/data/company";
-import { services } from "@/data/services";
 import Icon from "@/components/ui/Icon";
 import styles from "./status.module.css";
 
@@ -37,11 +36,12 @@ export default function NotFound() {
         </div>
         <nav aria-label="Popular pages" className={styles.links}>
           <span>Popular:</span>
-          {services.map((s) => (
-            <Link key={s.slug} href={`/services/${s.slug}`}>
-              {s.shortTitle}
-            </Link>
-          ))}
+          <Link href="/nbn-installation-adelaide">NBN installation</Link>
+          <Link href="/fttp-upgrade-adelaide">FTTP upgrades</Link>
+          <Link href="/cctv-installation-adelaide">CCTV installation</Link>
+          <Link href="/services">All services</Link>
+          <Link href="/blog">Guides</Link>
+          <Link href="/faq">FAQ</Link>
           <a href={company.phone.href}>Call {company.phone.display}</a>
         </nav>
       </div>

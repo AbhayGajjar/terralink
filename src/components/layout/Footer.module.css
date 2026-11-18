@@ -40,7 +40,7 @@
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: 1.5fr 0.8fr 1fr 1.3fr;
+    grid-template-columns: 1.3fr 1fr 1fr 1.2fr;
     gap: 48px;
   }
 }
@@ -173,6 +173,15 @@
   font-size: 13px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.areas li a {
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.areas li a:hover {
+  text-decoration: underline;
 }
 
 .bottom {

@@ -17,7 +17,7 @@ export default function ServicesOverview() {
               Every NBN connection type. <span className="text-gradient-blue">Plus smarter security.</span>
             </>
           }
-          lead="Whatever technology your address uses, our technicians install it properly the first time – and we design CCTV systems that actually protect what matters."
+          lead="Whatever nbn technology your address uses, we fix the wiring, run the cabling and get your connection working where you need it – and we design CCTV systems that actually protect what matters."
         />
         <Stagger className="grid grid--4">
           {services.map((service, index) => (

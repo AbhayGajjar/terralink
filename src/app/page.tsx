@@ -15,6 +15,11 @@ import FaqSection from "@/components/sections/FaqSection";
 import CtaBanner from "@/components/sections/CtaBanner";
 import SectionHeading from "@/components/ui/SectionHeading";
 import JsonLd from "@/components/ui/JsonLd";
+import RelatedLinks from "@/components/content/RelatedLinks";
+import { linkCards } from "@/lib/links";
+import { getAllPosts } from "@/lib/blog";
+import { landingPages } from "@/data/landing-pages";
+import { areas } from "@/data/areas";
 
 export const metadata: Metadata = buildMetadata({
   title: `NBN & CCTV Installation Adelaide | ${company.name}`,
@@ -25,10 +30,14 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function HomePage() {
+  const guides = linkCards(landingPages.map((page) => `/${page.slug}`));
+  const latestPosts = linkCards(getAllPosts().slice(0, 3).map((post) => `/blog/${post.slug}`));
+  const areaLinks = linkCards([...areas.map((area) => `/areas/${area.slug}`), "/areas"]);
   return (
     <>
       <Hero />
       <ServicesOverview />
+      <RelatedLinks id="adelaide-guides" eyebrow="Popular in Adelaide" title="Find the right help for your home" items={guides} tone="white" />
       <WhyChoose />
       {STATS_ARE_REAL && <StatsStrip />}
 
@@ -79,6 +88,8 @@ export default function HomePage() {
       </section>
       )}
 
+      <RelatedLinks id="latest-guides" eyebrow="Guides" title="Latest nbn and CCTV guides" items={latestPosts} />
+      <RelatedLinks id="home-areas" eyebrow="Service areas" title="Local technicians across Adelaide" items={areaLinks} tone="white" />
       <FaqSection items={homeFaqs} />
       <CtaBanner tone="white" />
       <JsonLd data={faqJsonLd(homeFaqs)} />

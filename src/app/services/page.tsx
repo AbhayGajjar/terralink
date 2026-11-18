@@ -11,6 +11,10 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import Reveal from "@/components/ui/Reveal";
 import Icon from "@/components/ui/Icon";
 import styles from "./services.module.css";
+import RelatedLinks from "@/components/content/RelatedLinks";
+import { linkCards } from "@/lib/links";
+import { landingPages } from "@/data/landing-pages";
+import { getAllPosts } from "@/lib/blog";
 
 export const metadata: Metadata = buildMetadata({
   title: "NBN & CCTV Installation Services Adelaide",
@@ -96,7 +100,9 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <CtaBanner tone="white" />
+      <RelatedLinks id="adelaide-guides" eyebrow="Adelaide guides" title="Not sure which service you need?" items={linkCards(landingPages.map((p) => `/${p.slug}`))} />
+      <RelatedLinks id="related-articles" eyebrow="Related articles" title="Guides from our technicians" items={linkCards(getAllPosts().slice(0, 3).map((p) => `/blog/${p.slug}`))} tone="white" />
+      <CtaBanner />
     </>
   );
 }

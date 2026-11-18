@@ -37,11 +37,34 @@ const required = {
   CollectionPage: ["name", "url"],
 };
 
-let errors = 0;
-const rows = [];
+const norm = (p) => (p.length > 1 ? p.replace(/\/$/, "") : p);
+const pages = new Map();
 for (const file of files.sort()) {
   const html = readFileSync(file, "utf8");
-  const page = "/" + relative(root, file).split("\\").join("/").replace(/(index)?\.html$/, "").replace(/\/index$/, "");
+  const page = norm("/" + relative(root, file).split("\\").join("/").replace(/(index)?\.html$/, "").replace(/\/index$/, ""));
+  const links = new Set(
+    [...html.matchAll(/href="(\/[^"#?]*)/g)].map((m) => norm(m[1])).filter((h) => !/^\/(_next|og)\/|\.[a-z0-9]+$/i.test(h)),
+  );
+  pages.set(page, { html, links });
+}
+
+// Click depth from the home page (breadth-first over internal links).
+const depth = new Map([["/", 0]]);
+const queue = ["/"];
+while (queue.length) {
+  const current = queue.shift();
+  for (const link of pages.get(current)?.links ?? []) {
+    if (!depth.has(link) && pages.has(link)) {
+      depth.set(link, depth.get(current) + 1);
+      queue.push(link);
+    }
+  }
+}
+const broken = new Set();
+
+let errors = 0;
+const rows = [];
+for (const [page, { html, links }] of pages) {
   const noindex = /<meta name="robots" content="[^"]*noindex/.test(html);
   const redirect = /http-equiv="refresh"/i.test(html);
   const title = decode(html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "");
@@ -77,11 +100,19 @@ for (const file of files.sort()) {
     if (h1 !== 1) problems.push(`${h1} <h1>`);
     if (!canonical) problems.push("no canonical");
     if (!ogImage) problems.push("no og:image");
+    if (!depth.has(page)) problems.push("not reachable from home");
+    else if (depth.get(page) > 3) problems.push(`${depth.get(page)} clicks from home`);
   }
+  for (const link of links) if (!pages.has(link)) broken.add(`${link} (linked from ${page})`);
   if (problems.length && !redirect && !noindex) errors++;
-  rows.push({ page, title: `${title.length}`, desc: `${desc.length}`, h1, schema: [...new Set(types)].join(", "), flags: [noindex && "noindex", redirect && "redirect"].filter(Boolean).join(" "), problems: problems.join("; ") });
+  rows.push({ page, title: `${title.length}`, desc: `${desc.length}`, h1, depth: depth.get(page) ?? "-", schema: [...new Set(types)].join(", "), flags: [noindex && "noindex", redirect && "redirect"].filter(Boolean).join(" "), problems: problems.join("; ") });
 }
 
 console.table(rows);
+if (broken.size) {
+  console.log(`\nBroken internal links (${broken.size}):`);
+  for (const b of broken) console.log(`  ${b}`);
+  errors++;
+}
 console.log(`${rows.length} pages checked, ${errors} with problems.`);
 process.exit(errors ? 1 : 0);

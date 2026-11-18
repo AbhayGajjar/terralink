@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { company, fullAddress } from "@/data/company";
-import { mainNav } from "@/data/navigation";
-import { services } from "@/data/services";
+import { footerServiceLinks } from "@/data/navigation";
+import { areas } from "@/data/areas";
+import { getAllPosts } from "@/lib/blog";
 import Icon, { type IconName } from "@/components/ui/Icon";
 import Logo from "./Logo";
 import { BackToTop, CurrentYear } from "./FooterClient";
@@ -17,6 +18,8 @@ const socialLinks = (
 ).filter((item) => Boolean(company.social[item.key]));
 
 export default function Footer() {
+  const posts = getAllPosts();
+  const areaPages = new Map(areas.map((area) => [area.name, area.slug]));
   return (
     <footer className={styles.footer}>
       <div className={styles.glow} aria-hidden="true" />
@@ -37,27 +40,30 @@ export default function Footer() {
           </div>
 
           <div>
-            <h2 className={styles.heading}>Quick links</h2>
+            <h2 className={styles.heading}>Services</h2>
             <ul className={styles.links}>
-              {mainNav.map((item) => (
+              {footerServiceLinks.map((item) => (
                 <li key={item.href}>
                   <Link href={item.href}>{item.label}</Link>
                 </li>
               ))}
-              <li>
-                <Link href="/contact">Request a quote</Link>
-              </li>
             </ul>
           </div>
 
           <div>
-            <h2 className={styles.heading}>Services</h2>
+            <h2 className={styles.heading}>Guides</h2>
             <ul className={styles.links}>
-              {services.map((service) => (
-                <li key={service.slug}>
-                  <Link href={`/services/${service.slug}`}>{service.shortTitle}</Link>
+              {posts.slice(0, 5).map((post) => (
+                <li key={post.slug}>
+                  <Link href={`/blog/${post.slug}`}>{post.seoTitle}</Link>
                 </li>
               ))}
+              <li>
+                <Link href="/blog">All guides</Link>
+              </li>
+              <li>
+                <Link href="/faq">nbn &amp; CCTV FAQs</Link>
+              </li>
             </ul>
           </div>
 
@@ -79,6 +85,10 @@ export default function Footer() {
                 <address>{fullAddress}</address>
               </li>
               <li>
+                <Icon name="form" />
+                <Link href="/contact">Request a free quote</Link>
+              </li>
+              <li>
                 <Icon name="clock" />
                 <span>
                   {company.openingHours.map((row) => (
@@ -97,9 +107,13 @@ export default function Footer() {
             <Icon name="location" /> Servicing
           </span>
           <ul>
-            {company.serviceAreas.map((area) => (
-              <li key={area}>{area}</li>
-            ))}
+            {company.serviceAreas.map((area) => {
+              const slug = areaPages.get(area);
+              return <li key={area}>{slug ? <Link href={`/areas/${slug}`}>{area}</Link> : area}</li>;
+            })}
+            <li>
+              <Link href="/areas">All service areas</Link>
+            </li>
           </ul>
         </div>
 
