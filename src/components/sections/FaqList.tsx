@@ -1,7 +1,4 @@
-"use client";
-
-import { Collapse } from "antd";
-import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import Icon from "@/components/ui/Icon";
 import styles from "./FaqList.module.css";
 
 export interface FaqItem {
@@ -9,25 +6,25 @@ export interface FaqItem {
   answer: string;
 }
 
-export default function FaqList({ items }: { items: FaqItem[] }) {
+/**
+ * Accessible FAQ accordion using native <details>: every answer is in the server-rendered HTML
+ * (so Google can read it and FAQPage schema matches visible content) and needs no JavaScript.
+ */
+export default function FaqList({ items, headingLevel = 3 }: { items: FaqItem[]; headingLevel?: 3 | 4 }) {
+  const Question = `h${headingLevel}` as const;
   return (
-    <Collapse
-      accordion
-      bordered={false}
-      defaultActiveKey={["0"]}
-      expandIconPlacement="end"
-      className={styles.faq}
-      expandIcon={({ isActive }) => (
-        <span className={`${styles.toggle} ${isActive ? styles.toggleActive : ""}`}>
-          {isActive ? <MinusOutlined /> : <PlusOutlined />}
-        </span>
-      )}
-      items={items.map((item, i) => ({
-        key: String(i),
-        label: <h3 className={styles.question}>{item.question}</h3>,
-        children: <p className={styles.answer}>{item.answer}</p>,
-        className: styles.item,
-      }))}
-    />
+    <div className={styles.faq}>
+      {items.map((item, i) => (
+        <details key={item.question} className={styles.item} open={i === 0}>
+          <summary className={styles.summary}>
+            <Question className={styles.question}>{item.question}</Question>
+            <span className={styles.toggle} aria-hidden="true">
+              <Icon name="arrowRight" />
+            </span>
+          </summary>
+          <p className={styles.answer}>{item.answer}</p>
+        </details>
+      ))}
+    </div>
   );
 }

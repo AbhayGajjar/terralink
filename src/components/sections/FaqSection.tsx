@@ -14,7 +14,7 @@ interface FaqSectionProps {
 
 export default function FaqSection({ items, title = "Frequently asked questions", eyebrow = "FAQs" }: FaqSectionProps) {
   return (
-    <section className="section section--white" aria-labelledby="faq-title">
+    <section id="faq" className="section section--white" aria-labelledby="faq-title" style={{ scrollMarginTop: "var(--header-h)" }}>
       <div className={`container ${styles.layout}`}>
         <div className={styles.intro}>
           <SectionHeading
