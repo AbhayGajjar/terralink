@@ -10,7 +10,9 @@ import styles from "./FloatingActions.module.css";
 export default function FloatingActions({ callIcon, quoteIcon }: { callIcon: ReactNode; quoteIcon: ReactNode }) {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
-  const onContact = pathname === "/contact";
+  // The static site serves /contact/ (trailing slash), so match both forms.
+  // The static site serves /contact/ (trailing slash), so match both forms.
+  const onContact = pathname === "/contact" || pathname === "/contact/";
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 520);
