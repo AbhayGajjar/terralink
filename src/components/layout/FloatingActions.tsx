@@ -11,7 +11,6 @@ export default function FloatingActions({ callIcon, quoteIcon }: { callIcon: Rea
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   // The static site serves /contact/ (trailing slash), so match both forms.
-  // The static site serves /contact/ (trailing slash), so match both forms.
   const onContact = pathname === "/contact" || pathname === "/contact/";
 
   useEffect(() => {
